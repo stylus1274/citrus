@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #151515;
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.redirect-screen {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+}
+
+.redirect-screen p {
+  margin: 0;
+}
+
+.redirect-screen a {
+  color: #f36f21;
+}

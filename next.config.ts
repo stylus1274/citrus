@@ -1,0 +1,56 @@
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      { source: "/design.html", destination: "/", permanent: true },
+      { source: "/hernando-residential-demolition", destination: "/hernando/residential-demolition", permanent: true },
+      { source: "/inverness-commercial-demolition", destination: "/inverness/commercial-demolition", permanent: true },
+      { source: "/inverness-demolition", destination: "/inverness/demolition", permanent: true },
+      { source: "/inverness-land-clearing", destination: "/inverness/land-clearing", permanent: true },
+      { source: "/inverness-residential-demolition", destination: "/inverness/residential-demolition", permanent: true },
+      { source: "/inverness-site-preparation", destination: "/inverness/site-prep", permanent: true },
+      { source: "/spring-hill-land-clearing", destination: "/spring-hill/land-clearing", permanent: true },
+      ...["blog", "brooksville", "commercial-demolition", "concrete-foundation-removal", "contact", "debris-removal-hauling", "demolition-permits-citrus-county-fl", "emergency-demolition", "hernando-residential-demolition", "hernando", "house-demolition-cost", "inverness-commercial-demolition", "inverness-demolition", "inverness-land-clearing", "inverness-residential-demolition", "inverness-site-preparation", "inverness", "land-clearing", "mobile-home-demolition", "pool-removal", "projects", "residential-demolition", "selective-demolition", "site-preparation-services-crystal-river-fl", "site-preparation", "spring-hill-land-clearing", "spring-hill", "why-citrus"].map((slug) => ({ source: `/${slug}.html`, destination: `/${slug}`, permanent: true })),
+    ];
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        { source: "/", destination: "/_site/index.html" },
+        { source: "/blog", destination: "/_site/blog.html" },
+        { source: "/brooksville", destination: "/_site/brooksville.html" },
+        { source: "/commercial-demolition", destination: "/_site/commercial-demolition.html" },
+        { source: "/concrete-foundation-removal", destination: "/_site/concrete-foundation-removal.html" },
+        { source: "/contact", destination: "/_site/contact.html" },
+        { source: "/debris-removal-hauling", destination: "/_site/debris-removal-hauling.html" },
+        { source: "/demolition-permits-citrus-county-fl", destination: "/_site/demolition-permits-citrus-county-fl.html" },
+        { source: "/emergency-demolition", destination: "/_site/emergency-demolition.html" },
+        { source: "/hernando/residential-demolition", destination: "/_site/hernando-residential-demolition.html" },
+        { source: "/hernando", destination: "/_site/hernando.html" },
+        { source: "/house-demolition-cost", destination: "/_site/house-demolition-cost.html" },
+        { source: "/inverness/commercial-demolition", destination: "/_site/inverness-commercial-demolition.html" },
+        { source: "/inverness/demolition", destination: "/_site/inverness-demolition.html" },
+        { source: "/inverness/land-clearing", destination: "/_site/inverness-land-clearing.html" },
+        { source: "/inverness/residential-demolition", destination: "/_site/inverness-residential-demolition.html" },
+        { source: "/inverness/site-prep", destination: "/_site/inverness-site-preparation.html" },
+        { source: "/inverness", destination: "/_site/inverness.html" },
+        { source: "/land-clearing", destination: "/_site/land-clearing.html" },
+        { source: "/mobile-home-demolition", destination: "/_site/mobile-home-demolition.html" },
+        { source: "/pool-removal", destination: "/_site/pool-removal.html" },
+        { source: "/projects", destination: "/_site/projects.html" },
+        { source: "/residential-demolition", destination: "/_site/residential-demolition.html" },
+        { source: "/selective-demolition", destination: "/_site/selective-demolition.html" },
+        { source: "/site-preparation-services-crystal-river-fl", destination: "/_site/site-preparation-services-crystal-river-fl.html" },
+        { source: "/site-preparation", destination: "/_site/site-preparation.html" },
+        { source: "/spring-hill/land-clearing", destination: "/_site/spring-hill-land-clearing.html" },
+        { source: "/spring-hill", destination: "/_site/spring-hill.html" },
+        { source: "/why-citrus", destination: "/_site/why-citrus.html" },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
+  },
+};
+
+export default nextConfig;

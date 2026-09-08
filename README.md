@@ -38,9 +38,9 @@ No Vercel-specific configuration file is required.
 
 ## Content and routes
 
-- Source designs live in `site-source/*.html`.
-- `scripts/prepare-vercel.mjs` unwraps those files during each build.
-- Embedded photographs are extracted into deduplicated, cacheable static assets during the build.
+- Clean standalone page sources live in `site-source/*.html`.
+- Optimized, deduplicated image sources live in `site-assets/`.
+- `scripts/prepare-vercel.mjs` publishes the pages and assets during each build.
 - Clean public routes and legacy redirects are declared in `next.config.ts`.
 - Generated files in `public/_site`, `public/_site-assets`, `public/sitemap.xml`, and `public/robots.txt` are intentionally excluded from Git because Vercel rebuilds them.
 
