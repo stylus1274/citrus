@@ -13,6 +13,54 @@ const productionOrigin = (
   "https://www.citrusdemolitionandlandclearing.com"
 ).replace(/\/$/, "");
 
+const responsiveAssets = [
+  '<link rel="stylesheet" href="/responsive.css">',
+  '<script src="/responsive.js" defer></script>',
+].join("\n");
+
+const mobileMenuMarkup = `
+<nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" hidden>
+  <button class="mobile-menu-close" type="button" aria-label="Close menu"><span aria-hidden="true">×</span></button>
+  <div class="mobile-menu-inner">
+    <p class="mobile-menu-label">Menu</p>
+    <details>
+      <summary>Demolition Services</summary>
+      <div class="mobile-menu-links">
+        <a href="/">All Demolition Services</a>
+        <a href="/residential-demolition">Residential Demolition</a>
+        <a href="/commercial-demolition">Commercial Demolition</a>
+        <a href="/selective-demolition">Selective Demolition</a>
+        <a href="/emergency-demolition">Emergency Demolition</a>
+        <a href="/mobile-home-demolition">Mobile Home Demolition</a>
+        <a href="/concrete-foundation-removal">Concrete &amp; Foundation Removal</a>
+      </div>
+    </details>
+    <details>
+      <summary>Site &amp; Property Work</summary>
+      <div class="mobile-menu-links">
+        <a href="/land-clearing">Land Clearing</a>
+        <a href="/site-preparation">Site Preparation</a>
+        <a href="/pool-removal">Pool Removal</a>
+        <a href="/debris-removal-hauling">Debris Removal &amp; Hauling</a>
+      </div>
+    </details>
+    <details>
+      <summary>Service Areas</summary>
+      <div class="mobile-menu-links">
+        <a href="/brooksville">Brooksville</a>
+        <a href="/spring-hill">Spring Hill</a>
+        <a href="/inverness">Inverness</a>
+        <a href="/hernando">Hernando County</a>
+      </div>
+    </details>
+    <a class="mobile-menu-primary-link" href="/projects">Projects</a>
+    <a class="mobile-menu-primary-link" href="/blog">Blog</a>
+    <a class="mobile-menu-primary-link" href="/why-citrus">Why Citrus</a>
+    <a class="mobile-menu-primary-link" href="/contact">Contact</a>
+    <a class="mobile-menu-estimate" href="/contact">Request a free estimate <span aria-hidden="true">↗</span></a>
+  </div>
+</nav>`;
+
 export const routeByFile = {
   "design.html": "/",
   "blog.html": "/blog",
@@ -119,7 +167,11 @@ function prepareDocument(html, filename) {
     `<meta property="og:url" content="${canonicalUrl}">`,
     '<meta property="og:type" content="website">',
   ].join("\n");
-  prepared = prepared.replace(/<\/head>/i, `${metadata}\n</head>`);
+  prepared = prepared.replace(/<\/head>/i, `${metadata}\n${responsiveAssets}\n</head>`);
+  prepared = prepared.replace(
+    /(<header\b[\s\S]*?<\/header>)/i,
+    `$1${mobileMenuMarkup}`,
+  );
   return `<!-- Generated from site-source/${filename} by scripts/prepare-vercel.mjs. -->\n${prepared}`;
 }
 

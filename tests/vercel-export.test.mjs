@@ -14,9 +14,23 @@ test("exports every site page as standalone, crawlable HTML", async () => {
     assert.match(html, /<!doctype html>/i, filename);
     assert.match(html, /<h1\b/i, filename);
     assert.match(html, /<link rel="canonical"/i, filename);
+    assert.match(html, /<link rel="stylesheet" href="\/responsive\.css">/i, filename);
+    assert.match(html, /<script src="\/responsive\.js" defer><\/script>/i, filename);
+    assert.match(html, /id="mobile-menu"/i, filename);
     assert.doesNotMatch(html, /<iframe\b/i, filename);
     assert.doesNotMatch(html, /data:image\/(?:gif|jpeg|png|webp);base64/i, filename);
   }
+});
+
+test("ships shared responsive navigation and narrow-screen safeguards", async () => {
+  const responsiveCss = await readFile(path.join(projectRoot, "public", "responsive.css"), "utf8");
+  const responsiveJs = await readFile(path.join(projectRoot, "public", "responsive.js"), "utf8");
+  assert.match(responsiveCss, /@media \(max-width: 980px\)/);
+  assert.match(responsiveCss, /@media \(max-width: 480px\)/);
+  assert.match(responsiveCss, /\.mobile-menu-toggle/);
+  assert.match(responsiveCss, /font-size: 16px/);
+  assert.match(responsiveJs, /aria-expanded/);
+  assert.match(responsiveJs, /event\.key === "Escape"/);
 });
 
 test("extracts embedded photographs into cacheable static files", async () => {
