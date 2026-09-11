@@ -64,6 +64,7 @@ const mobileMenuMarkup = `
 export const routeByFile = {
   "5-signs-you-need-a-licensed-demolition-contractor.html": "/5-signs-you-need-a-licensed-demolition-contractor",
   "crystal-river-debris-removal-after-demolition.html": "/crystal-river-debris-removal-after-demolition",
+  "emergency-demolition-crystal-river.html": "/emergency-demolition-crystal-river",
   "design.html": "/",
   "blog.html": "/blog",
   "brooksville.html": "/brooksville",
@@ -78,6 +79,7 @@ export const routeByFile = {
   "hernando-residential-demolition.html": "/hernando/residential-demolition",
   "hernando.html": "/hernando",
   "house-demolition-cost.html": "/house-demolition-cost",
+  "understanding-hidden-costs-residential-demolition.html": "/understanding-hidden-costs-residential-demolition",
   "inverness-commercial-demolition.html": "/inverness/commercial-demolition",
   "inverness-demolition.html": "/inverness/demolition",
   "inverness-land-clearing.html": "/inverness/land-clearing",

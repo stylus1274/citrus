@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       { source: "/inverness-residential-demolition", destination: "/inverness/residential-demolition", permanent: true },
       { source: "/inverness-site-preparation", destination: "/inverness/site-prep", permanent: true },
       { source: "/spring-hill-land-clearing", destination: "/spring-hill/land-clearing", permanent: true },
-      ...["5-signs-you-need-a-licensed-demolition-contractor", "a-comprehensive-guide-to-residential-demolition-services", "blog", "brooksville", "choosing-the-right-demolition-contractor", "commercial-demolition", "concrete-foundation-removal", "contact", "crystal-river-debris-removal-after-demolition", "debris-removal-hauling", "demolition-permits-citrus-county-fl", "emergency-demolition", "hernando-residential-demolition", "hernando", "house-demolition-cost", "inverness-commercial-demolition", "inverness-demolition", "inverness-land-clearing", "inverness-residential-demolition", "inverness-site-preparation", "inverness", "land-clearing", "mobile-home-demolition", "pool-removal", "projects", "residential-demolition", "selective-demolition", "site-preparation-services-crystal-river-fl", "site-preparation", "spring-hill-land-clearing", "spring-hill", "why-citrus"].map((slug) => ({ source: `/${slug}.html`, destination: `/${slug}`, permanent: true })),
+      ...["5-signs-you-need-a-licensed-demolition-contractor", "a-comprehensive-guide-to-residential-demolition-services", "blog", "brooksville", "choosing-the-right-demolition-contractor", "commercial-demolition", "concrete-foundation-removal", "contact", "crystal-river-debris-removal-after-demolition", "debris-removal-hauling", "demolition-permits-citrus-county-fl", "emergency-demolition-crystal-river", "emergency-demolition", "hernando-residential-demolition", "hernando", "house-demolition-cost", "inverness-commercial-demolition", "inverness-demolition", "inverness-land-clearing", "inverness-residential-demolition", "inverness-site-preparation", "inverness", "land-clearing", "mobile-home-demolition", "pool-removal", "projects", "residential-demolition", "selective-demolition", "site-preparation-services-crystal-river-fl", "site-preparation", "spring-hill-land-clearing", "spring-hill", "understanding-hidden-costs-residential-demolition", "why-citrus"].map((slug) => ({ source: `/${slug}.html`, destination: `/${slug}`, permanent: true })),
     ];
   },
   async rewrites() {
@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
         { source: "/debris-removal-hauling", destination: "/_site/debris-removal-hauling.html" },
         { source: "/demolition-permits-citrus-county-fl", destination: "/_site/demolition-permits-citrus-county-fl.html" },
         { source: "/emergency-demolition", destination: "/_site/emergency-demolition.html" },
+        { source: "/emergency-demolition-crystal-river", destination: "/_site/emergency-demolition-crystal-river.html" },
         { source: "/hernando/residential-demolition", destination: "/_site/hernando-residential-demolition.html" },
         { source: "/hernando", destination: "/_site/hernando.html" },
         { source: "/house-demolition-cost", destination: "/_site/house-demolition-cost.html" },
@@ -49,6 +50,7 @@ const nextConfig: NextConfig = {
         { source: "/site-preparation", destination: "/_site/site-preparation.html" },
         { source: "/spring-hill/land-clearing", destination: "/_site/spring-hill-land-clearing.html" },
         { source: "/spring-hill", destination: "/_site/spring-hill.html" },
+        { source: "/understanding-hidden-costs-residential-demolition", destination: "/_site/understanding-hidden-costs-residential-demolition.html" },
         { source: "/why-citrus", destination: "/_site/why-citrus.html" },
       ],
       afterFiles: [],

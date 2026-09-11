@@ -8,7 +8,7 @@ const outputDirectory = path.join(projectRoot, "public", "_site");
 
 test("exports every site page as standalone, crawlable HTML", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
-  assert.equal(files.length, 33);
+  assert.equal(files.length, 35);
   for (const filename of files) {
     const html = await readFile(path.join(outputDirectory, filename), "utf8");
     assert.match(html, /<!doctype html>/i, filename);
@@ -48,5 +48,7 @@ test("generates search-engine discovery files", async () => {
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/a-comprehensive-guide-to-residential-demolition-services/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/5-signs-you-need-a-licensed-demolition-contractor/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/crystal-river-debris-removal-after-demolition/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/emergency-demolition-crystal-river/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/understanding-hidden-costs-residential-demolition/);
   assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/sitemap\.xml/);
 });
