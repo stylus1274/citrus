@@ -8,7 +8,7 @@ const outputDirectory = path.join(projectRoot, "public", "_site");
 
 test("exports every site page as standalone, crawlable HTML", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
-  assert.equal(files.length, 37);
+  assert.equal(files.length, 39);
   for (const filename of files) {
     const html = await readFile(path.join(outputDirectory, filename), "utf8");
     assert.match(html, /<!doctype html>/i, filename);
@@ -52,5 +52,7 @@ test("generates search-engine discovery files", async () => {
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/understanding-hidden-costs-residential-demolition/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/residential-contractor-florida/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/demolition-excavation-services-citrus-county-fl/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/how-long-does-it-take-to-demolish-a-house-in-crystal-river-fl/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/who-removes-old-mobile-homes-crystal-river-fl/);
   assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/sitemap\.xml/);
 });
