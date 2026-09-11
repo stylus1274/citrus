@@ -8,7 +8,7 @@ const outputDirectory = path.join(projectRoot, "public", "_site");
 
 test("exports every site page as standalone, crawlable HTML", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
-  assert.equal(files.length, 43);
+  assert.equal(files.length, 45);
   for (const filename of files) {
     const html = await readFile(path.join(outputDirectory, filename), "utf8");
     assert.match(html, /<!doctype html>/i, filename);
@@ -58,5 +58,7 @@ test("generates search-engine discovery files", async () => {
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/mobile-home-demolition-services-citrus-county/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/mobile-home-demolition-contractor-license-insurance-crystal-river-fl/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/licensed-residential-demolition-contractor-crystal-river-fl/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/choose-foundation-demolition-contractor-crystal-river-fl/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/mobile-home-demolition-contractor-services-crystal-river-fl/);
   assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/sitemap\.xml/);
 });
