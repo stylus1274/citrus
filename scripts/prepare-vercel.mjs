@@ -68,6 +68,8 @@ export const routeByFile = {
   "commercial-demolition.html": "/commercial-demolition",
   "concrete-foundation-removal.html": "/concrete-foundation-removal",
   "contact.html": "/contact",
+  "choosing-the-right-demolition-contractor.html": "/choosing-the-right-demolition-contractor",
+  "a-comprehensive-guide-to-residential-demolition-services.html": "/a-comprehensive-guide-to-residential-demolition-services",
   "debris-removal-hauling.html": "/debris-removal-hauling",
   "demolition-permits-citrus-county-fl.html": "/demolition-permits-citrus-county-fl",
   "emergency-demolition.html": "/emergency-demolition",

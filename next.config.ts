@@ -11,15 +11,17 @@ const nextConfig: NextConfig = {
       { source: "/inverness-residential-demolition", destination: "/inverness/residential-demolition", permanent: true },
       { source: "/inverness-site-preparation", destination: "/inverness/site-prep", permanent: true },
       { source: "/spring-hill-land-clearing", destination: "/spring-hill/land-clearing", permanent: true },
-      ...["blog", "brooksville", "commercial-demolition", "concrete-foundation-removal", "contact", "debris-removal-hauling", "demolition-permits-citrus-county-fl", "emergency-demolition", "hernando-residential-demolition", "hernando", "house-demolition-cost", "inverness-commercial-demolition", "inverness-demolition", "inverness-land-clearing", "inverness-residential-demolition", "inverness-site-preparation", "inverness", "land-clearing", "mobile-home-demolition", "pool-removal", "projects", "residential-demolition", "selective-demolition", "site-preparation-services-crystal-river-fl", "site-preparation", "spring-hill-land-clearing", "spring-hill", "why-citrus"].map((slug) => ({ source: `/${slug}.html`, destination: `/${slug}`, permanent: true })),
+      ...["a-comprehensive-guide-to-residential-demolition-services", "blog", "brooksville", "choosing-the-right-demolition-contractor", "commercial-demolition", "concrete-foundation-removal", "contact", "debris-removal-hauling", "demolition-permits-citrus-county-fl", "emergency-demolition", "hernando-residential-demolition", "hernando", "house-demolition-cost", "inverness-commercial-demolition", "inverness-demolition", "inverness-land-clearing", "inverness-residential-demolition", "inverness-site-preparation", "inverness", "land-clearing", "mobile-home-demolition", "pool-removal", "projects", "residential-demolition", "selective-demolition", "site-preparation-services-crystal-river-fl", "site-preparation", "spring-hill-land-clearing", "spring-hill", "why-citrus"].map((slug) => ({ source: `/${slug}.html`, destination: `/${slug}`, permanent: true })),
     ];
   },
   async rewrites() {
     return {
       beforeFiles: [
         { source: "/", destination: "/_site/index.html" },
+        { source: "/a-comprehensive-guide-to-residential-demolition-services", destination: "/_site/a-comprehensive-guide-to-residential-demolition-services.html" },
         { source: "/blog", destination: "/_site/blog.html" },
         { source: "/brooksville", destination: "/_site/brooksville.html" },
+        { source: "/choosing-the-right-demolition-contractor", destination: "/_site/choosing-the-right-demolition-contractor.html" },
         { source: "/commercial-demolition", destination: "/_site/commercial-demolition.html" },
         { source: "/concrete-foundation-removal", destination: "/_site/concrete-foundation-removal.html" },
         { source: "/contact", destination: "/_site/contact.html" },
