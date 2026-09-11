@@ -90,6 +90,8 @@ export const routeByFile = {
   "inverness.html": "/inverness",
   "land-clearing.html": "/land-clearing",
   "mobile-home-demolition.html": "/mobile-home-demolition",
+  "mobile-home-demolition-services-citrus-county.html": "/mobile-home-demolition-services-citrus-county",
+  "mobile-home-demolition-vs-removal-central-florida.html": "/mobile-home-demolition-vs-removal-central-florida",
   "pool-removal.html": "/pool-removal",
   "projects.html": "/projects",
   "residential-demolition.html": "/residential-demolition",
