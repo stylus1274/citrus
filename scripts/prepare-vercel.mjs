@@ -62,6 +62,8 @@ const mobileMenuMarkup = `
 </nav>`;
 
 export const routeByFile = {
+  "5-signs-you-need-a-licensed-demolition-contractor.html": "/5-signs-you-need-a-licensed-demolition-contractor",
+  "crystal-river-debris-removal-after-demolition.html": "/crystal-river-debris-removal-after-demolition",
   "design.html": "/",
   "blog.html": "/blog",
   "brooksville.html": "/brooksville",
