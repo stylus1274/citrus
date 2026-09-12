@@ -8,7 +8,7 @@ const outputDirectory = path.join(projectRoot, "public", "_site");
 
 test("exports every site page as standalone, crawlable HTML", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
-  assert.equal(files.length, 49);
+  assert.equal(files.length, 53);
   for (const filename of files) {
     const html = await readFile(path.join(outputDirectory, filename), "utf8");
     assert.match(html, /<!doctype html>/i, filename);
@@ -64,5 +64,9 @@ test("generates search-engine discovery files", async () => {
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/total-demolition-faq/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/house-demolition-permit-crystal-river/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/environmental-impact-old-building-demolition/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/marion-county-residential-demolition-faq/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/foundation-slab-removal-required-pricing/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/land-preparation-after-demolition-citrus-county/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/hurricane-damaged-house-demolition-in-citrus-county/);
   assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/sitemap\.xml/);
 });
