@@ -8,7 +8,7 @@ const outputDirectory = path.join(projectRoot, "public", "_site");
 
 test("exports every site page as standalone, crawlable HTML", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
-  assert.equal(files.length, 53);
+  assert.equal(files.length, 55);
   for (const filename of files) {
     const html = await readFile(path.join(outputDirectory, filename), "utf8");
     assert.match(html, /<!doctype html>/i, filename);
@@ -68,5 +68,7 @@ test("generates search-engine discovery files", async () => {
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/foundation-slab-removal-required-pricing/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/land-preparation-after-demolition-citrus-county/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/hurricane-damaged-house-demolition-in-citrus-county/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/whats-the-difference-between-cleanup-and-demolition/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/house-demolition-cost-citrus-county-guide/);
   assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/sitemap\.xml/);
 });
