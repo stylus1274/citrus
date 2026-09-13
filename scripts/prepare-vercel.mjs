@@ -84,6 +84,8 @@ export const routeByFile = {
   "hurricane-damaged-house-demolition-in-citrus-county.html": "/hurricane-damaged-house-demolition-in-citrus-county",
   "whats-the-difference-between-cleanup-and-demolition.html": "/whats-the-difference-between-cleanup-and-demolition",
   "house-demolition-cost-citrus-county-guide.html": "/house-demolition-cost-citrus-county-guide",
+  "top-signs-property-needs-emergency-demolition-florida.html": "/top-signs-property-needs-emergency-demolition-florida",
+  "storm-damage-repair-vs-demolition-west-central-florida.html": "/storm-damage-repair-vs-demolition-west-central-florida",
   "hernando-residential-demolition.html": "/hernando/residential-demolition",
   "hernando.html": "/hernando",
   "house-demolition-cost.html": "/house-demolition-cost",
