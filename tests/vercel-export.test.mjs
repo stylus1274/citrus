@@ -8,7 +8,7 @@ const outputDirectory = path.join(projectRoot, "public", "_site");
 
 test("exports every site page as standalone, crawlable HTML", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
-  assert.equal(files.length, 57);
+  assert.equal(files.length, 59);
   for (const filename of files) {
     const html = await readFile(path.join(outputDirectory, filename), "utf8");
     assert.match(html, /<!doctype html>/i, filename);
@@ -72,5 +72,7 @@ test("generates search-engine discovery files", async () => {
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/house-demolition-cost-citrus-county-guide/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/top-signs-property-needs-emergency-demolition-florida/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/storm-damage-repair-vs-demolition-west-central-florida/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/demolition-waste-florida-guide/);
+  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/pool-removal-cost-in-florida/);
   assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/sitemap\.xml/);
 });
