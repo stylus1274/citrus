@@ -70,6 +70,7 @@ export const routeByFile = {
   "brooksville.html": "/brooksville",
   "commercial-demolition.html": "/commercial-demolition",
   "concrete-foundation-removal.html": "/concrete-foundation-removal",
+  "concrete-removal-faqs-guide.html": "/concrete-removal-faqs-guide",
   "contact.html": "/contact",
   "choosing-the-right-demolition-contractor.html": "/choosing-the-right-demolition-contractor",
   "choose-foundation-demolition-contractor-crystal-river-fl.html": "/choose-foundation-demolition-contractor-crystal-river-fl",
@@ -121,6 +122,7 @@ export const routeByFile = {
   "total-demolition-faq.html": "/total-demolition-faq",
   "why-citrus.html": "/why-citrus",
   "who-removes-old-mobile-homes-crystal-river-fl.html": "/who-removes-old-mobile-homes-crystal-river-fl",
+  "what-to-expect-during-detached-garage-demolition.html": "/what-to-expect-during-detached-garage-demolition",
 };
 
 function decodeHtmlAttribute(value) {
