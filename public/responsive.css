@@ -1,7 +1,7 @@
 /* Shared responsive hardening for every generated site page. */
 #citrus-demolition-services-redesign {
   max-width: 100%;
-  overflow: visible;
+  overflow: clip !important;
 }
 
 #citrus-demolition-services-redesign *,
