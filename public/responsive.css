@@ -23,6 +23,78 @@
   display: none;
 }
 
+@media (min-width: 981px) {
+  #citrus-demolition-services-redesign .services-menu.services-menu-compact {
+    width: 680px;
+  }
+
+  #citrus-demolition-services-redesign .services-menu-compact .services-columns {
+    padding: 24px 28px 22px;
+  }
+
+  #citrus-demolition-services-redesign .services-menu-compact .services-group {
+    padding-right: 28px;
+  }
+
+  #citrus-demolition-services-redesign .services-menu-compact .services-group + .services-group {
+    padding-right: 0;
+    padding-left: 28px;
+  }
+
+  #citrus-demolition-services-redesign .services-menu-compact .services-group > p {
+    margin-bottom: 9px;
+  }
+
+  #citrus-demolition-services-redesign .services-menu-compact .services-group > a {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 0;
+  }
+
+  #citrus-demolition-services-redesign .services-menu-compact .services-group a strong {
+    line-height: 1.3;
+  }
+
+  #citrus-demolition-services-redesign .services-menu-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: #f36f21;
+  }
+
+  #citrus-demolition-services-redesign .nav .services-menu-actions > a {
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 15px 22px;
+    border-right: 1px solid rgba(255, 255, 255, .35);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  #citrus-demolition-services-redesign .nav .services-menu-actions > a:last-child {
+    border-right: 0;
+  }
+
+  #citrus-demolition-services-redesign .nav .services-menu-actions > a:hover {
+    background: #cf4e00;
+    color: #fff;
+  }
+
+  #citrus-demolition-services-redesign .services-menu-actions span {
+    display: inline;
+    color: inherit;
+    font-size: 14px;
+    line-height: 1;
+  }
+}
+
 body.citrus-menu-lock {
   overflow: hidden;
 }

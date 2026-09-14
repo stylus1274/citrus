@@ -33,6 +33,20 @@ test("ships shared responsive navigation and narrow-screen safeguards", async ()
   assert.match(responsiveJs, /event\.key === "Escape"/);
 });
 
+test("uses a compact service mega menu with only core services", async () => {
+  const html = await readFile(path.join(outputDirectory, "index.html"), "utf8");
+  const menu = html.match(
+    /<div class="services-menu services-menu-compact">([\s\S]*?)<\/div><\/div>(?=<div class="services-dropdown areas-dropdown)/i,
+  )?.[1];
+
+  assert.ok(menu, "compact services menu");
+  assert.equal([...menu.matchAll(/<a\b/g)].length, 12);
+  assert.doesNotMatch(menu, /<small\b/i);
+  assert.doesNotMatch(menu, /Inverness|Spring Hill|Hernando County/i);
+  assert.match(menu, /View All Services/);
+  assert.match(menu, /Request a Free Estimate/);
+});
+
 test("extracts embedded photographs into cacheable static files", async () => {
   const assets = await readdir(path.join(projectRoot, "public", "_site-assets"));
   assert.ok(assets.length > 10);

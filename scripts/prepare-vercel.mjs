@@ -18,6 +18,16 @@ const responsiveAssets = [
   '<script src="/responsive.js" defer></script>',
 ].join("\n");
 
+const compactServicesMenuMarkup = \`<div class="services-menu services-menu-compact"><div class="services-columns"><div class="services-group"><p>Demolition</p><a href="/residential-demolition" target="_top"><strong>Residential Demolition</strong></a><a href="/commercial-demolition" target="_top"><strong>Commercial Demolition</strong></a><a href="/selective-demolition" target="_top"><strong>Selective Demolition</strong></a><a href="/emergency-demolition" target="_top"><strong>Emergency Demolition</strong></a><a href="/mobile-home-demolition" target="_top"><strong>Mobile Home Demolition</strong></a><a href="/concrete-foundation-removal" target="_top"><strong>Concrete &amp; Foundation Removal</strong></a></div><div class="services-group"><p>Site &amp; Property Work</p><a href="/land-clearing" target="_top"><strong>Land Clearing</strong></a><a href="/site-preparation" target="_top"><strong>Site Preparation</strong></a><a href="/pool-removal" target="_top"><strong>Pool Removal</strong></a><a href="/debris-removal-hauling" target="_top"><strong>Debris Removal &amp; Hauling</strong></a></div></div><div class="services-menu-actions"><a href="/" target="_top">View All Services <span aria-hidden="true">↗</span></a><a href="/contact" target="_top">Request a Free Estimate <span aria-hidden="true">↗</span></a></div></div>\`;
+
+function compactDesktopServicesMenu(html) {
+  const menuPattern = /<div class="services-menu">[\s\S]*?<\/div><\/div>(?=<div class="services-dropdown areas-dropdown)/;
+  if (!menuPattern.test(html)) {
+    throw new Error("A source page is missing the expected desktop services menu.");
+  }
+  return html.replace(menuPattern, \`\${compactServicesMenuMarkup}</div>\`);
+}
+
 const mobileMenuMarkup = `
 <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" hidden>
   <button class="mobile-menu-close" type="button" aria-label="Close menu"><span aria-hidden="true">×</span></button>
@@ -185,7 +195,7 @@ function prepareDocument(html, filename) {
   const canonicalUrl = `${productionOrigin}${route === "/" ? "/" : route}`;
   const title = pageTitle(html, filename);
   const description = pageDescription(html);
-  let prepared = cleanInternalUrls(html)
+  let prepared = compactDesktopServicesMenu(cleanInternalUrls(html))
     .replace(/<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>\s*/gi, "")
     .replace(/<meta\b[^>]*name=["']description["'][^>]*>\s*/gi, "")
     .replace(/<link\b[^>]*rel=["']canonical["'][^>]*>\s*/gi, "")
