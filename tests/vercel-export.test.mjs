@@ -50,7 +50,7 @@ test("uses a compact service mega menu with only core services", async () => {
 test("uses a compact service areas menu without numbered entries", async () => {
   const html = await readFile(path.join(outputDirectory, "index.html"), "utf8");
   const menu = html.match(
-    /<div class="services-menu areas-menu areas-menu-compact">([\s\S]*?)<\/div><\/div>(?=<a href="\/projects")/i,
+    /<div class="services-menu areas-menu areas-menu-compact">([\s\S]*?)<\/div><\/div>(?=<a\b[^>]*>Projects<\/a>)/i,
   )?.[1];
 
   assert.ok(menu, "compact service areas menu");

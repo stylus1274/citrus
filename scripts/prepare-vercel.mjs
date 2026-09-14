@@ -31,7 +31,7 @@ function compactDesktopServicesMenu(html) {
 const compactAreasMenuMarkup = '<div class="services-menu areas-menu areas-menu-compact"><p class="areas-menu-head">Service Areas</p><div class="areas-compact-grid"><a class="area-compact-link" href="/brooksville" target="_top">Brooksville</a><a class="area-compact-link" href="/spring-hill" target="_top">Spring Hill</a><a class="area-compact-link" href="/inverness" target="_top">Inverness</a><a class="area-compact-link" href="/hernando" target="_top">Hernando County</a></div><a class="areas-compact-action" href="/contact" target="_top">Check Your Address <span aria-hidden="true">↗</span></a></div>';
 
 function compactServiceAreasMenu(html) {
-  const areaMenuPattern = /<div class="services-menu areas-menu">[\s\S]*?<\/div><\/div>(?=<a href="\/projects")/;
+  const areaMenuPattern = /<div class="services-menu areas-menu">[\s\S]*?<\/div><\/div>(?=<a\b[^>]*>Projects<\/a>)/;
   if (!areaMenuPattern.test(html)) {
     throw new Error("A source page is missing the expected service areas menu.");
   }
