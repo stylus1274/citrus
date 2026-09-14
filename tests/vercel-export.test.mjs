@@ -47,6 +47,23 @@ test("uses a compact service mega menu with only core services", async () => {
   assert.match(menu, /Request a Free Estimate/);
 });
 
+test("uses a compact service areas menu without numbered entries", async () => {
+  const html = await readFile(path.join(outputDirectory, "index.html"), "utf8");
+  const menu = html.match(
+    /<div class="services-menu areas-menu areas-menu-compact">([\s\S]*?)<\/div><\/div>(?=<a href="\/projects")/i,
+  )?.[1];
+
+  assert.ok(menu, "compact service areas menu");
+  assert.equal([...menu.matchAll(/<a\b/g)].length, 5);
+  assert.doesNotMatch(menu, /<b\b|<small\b|<i\b/i);
+  assert.doesNotMatch(menu, /More Central Florida|coming next/i);
+  assert.match(menu, /Brooksville/);
+  assert.match(menu, /Spring Hill/);
+  assert.match(menu, /Inverness/);
+  assert.match(menu, /Hernando County/);
+  assert.match(menu, /Check Your Address/);
+});
+
 test("extracts embedded photographs into cacheable static files", async () => {
   const assets = await readdir(path.join(projectRoot, "public", "_site-assets"));
   assert.ok(assets.length > 10);

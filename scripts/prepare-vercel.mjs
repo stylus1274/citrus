@@ -28,6 +28,16 @@ function compactDesktopServicesMenu(html) {
   return html.replace(menuPattern, `${compactServicesMenuMarkup}</div>`);
 }
 
+const compactAreasMenuMarkup = '<div class="services-menu areas-menu areas-menu-compact"><p class="areas-menu-head">Service Areas</p><div class="areas-compact-grid"><a class="area-compact-link" href="/brooksville" target="_top">Brooksville</a><a class="area-compact-link" href="/spring-hill" target="_top">Spring Hill</a><a class="area-compact-link" href="/inverness" target="_top">Inverness</a><a class="area-compact-link" href="/hernando" target="_top">Hernando County</a></div><a class="areas-compact-action" href="/contact" target="_top">Check Your Address <span aria-hidden="true">↗</span></a></div>';
+
+function compactServiceAreasMenu(html) {
+  const areaMenuPattern = /<div class="services-menu areas-menu">[\s\S]*?<\/div><\/div>(?=<a href="\/projects")/;
+  if (!areaMenuPattern.test(html)) {
+    throw new Error("A source page is missing the expected service areas menu.");
+  }
+  return html.replace(areaMenuPattern, compactAreasMenuMarkup + "</div>");
+}
+
 const mobileMenuMarkup = `
 <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" hidden>
   <button class="mobile-menu-close" type="button" aria-label="Close menu"><span aria-hidden="true">×</span></button>
@@ -195,7 +205,7 @@ function prepareDocument(html, filename) {
   const canonicalUrl = `${productionOrigin}${route === "/" ? "/" : route}`;
   const title = pageTitle(html, filename);
   const description = pageDescription(html);
-  let prepared = compactDesktopServicesMenu(cleanInternalUrls(html))
+  let prepared = compactServiceAreasMenu(compactDesktopServicesMenu(cleanInternalUrls(html)))
     .replace(/<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>\s*/gi, "")
     .replace(/<meta\b[^>]*name=["']description["'][^>]*>\s*/gi, "")
     .replace(/<link\b[^>]*rel=["']canonical["'][^>]*>\s*/gi, "")
