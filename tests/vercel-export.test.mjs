@@ -14,7 +14,7 @@ test("exports every site page as standalone, crawlable HTML", async () => {
     assert.match(html, /<!doctype html>/i, filename);
     assert.match(html, /<h1\b/i, filename);
     assert.match(html, /<link rel="canonical"/i, filename);
-    assert.match(html, /<link rel="stylesheet" href="\/responsive\.css">/i, filename);
+    assert.match(html, /<link rel="stylesheet" href="\/responsive\.css\?v=20260914-1">/i, filename);
     assert.match(html, /<script src="\/responsive\.js" defer><\/script>/i, filename);
     assert.match(html, /id="mobile-menu"/i, filename);
     assert.doesNotMatch(html, /<iframe\b/i, filename);

@@ -166,16 +166,10 @@
   }
 }
 
-@keyframes services-dropdown-in {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
+#citrus-demolition-services-redesign .services-dropdown.open .services-menu,
+#citrus-demolition-services-redesign .services-dropdown:hover .services-menu {
+  animation: none !important;
+  transform: translateX(-50%) !important;
 }
 
 body.citrus-menu-lock {
