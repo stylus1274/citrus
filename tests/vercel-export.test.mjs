@@ -14,7 +14,7 @@ test("exports every site page as standalone, crawlable HTML", async () => {
     assert.match(html, /<!doctype html>/i, filename);
     assert.match(html, /<h1\b/i, filename);
     assert.match(html, /<link rel="canonical"/i, filename);
-    assert.match(html, /<link rel="stylesheet" href="\/responsive\.css\?v=20260914-2">/i, filename);
+    assert.match(html, /<link rel="stylesheet" href="\/responsive\.css\?v=20260914-3">/i, filename);
     assert.match(html, /<script src="\/responsive\.js\?v=20260914-2" defer><\/script>/i, filename);
     assert.match(html, /id="mobile-menu"/i, filename);
     assert.doesNotMatch(html, /<iframe\b/i, filename);
@@ -28,6 +28,7 @@ test("ships shared responsive navigation and narrow-screen safeguards", async ()
   assert.match(responsiveCss, /@media \(max-width: 980px\)/);
   assert.match(responsiveCss, /@media \(max-width: 480px\)/);
   assert.match(responsiveCss, /\.mobile-menu-toggle/);
+  assert.match(responsiveCss, /overflow: clip !important/);
   assert.match(responsiveCss, /position: sticky !important/);
   assert.match(responsiveCss, /\.site-header\.is-stuck/);
   assert.match(responsiveCss, /font-size: 16px/);
