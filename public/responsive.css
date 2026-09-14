@@ -18,6 +18,15 @@
   overflow-wrap: break-word;
 }
 
+#citrus-demolition-services-redesign h1,
+#citrus-demolition-services-redesign h2,
+#citrus-demolition-services-redesign h3,
+#citrus-demolition-services-redesign h4,
+#citrus-demolition-services-redesign h5,
+#citrus-demolition-services-redesign h6 {
+  line-height: 1.08 !important;
+}
+
 #citrus-demolition-services-redesign .mobile-menu-toggle,
 #citrus-demolition-services-redesign .mobile-menu {
   display: none;
