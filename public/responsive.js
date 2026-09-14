@@ -15,6 +15,15 @@
   header.append(toggle);
 
   const closeButton = menu.querySelector(".mobile-menu-close");
+  const topbar = root.querySelector(".topbar");
+
+  function updateStickyHeader() {
+    const stickyPoint = topbar?.offsetHeight ?? 0;
+    header.classList.toggle("is-stuck", window.scrollY > stickyPoint);
+  }
+
+  updateStickyHeader();
+  window.addEventListener("scroll", updateStickyHeader, { passive: true });
 
   function setMenuOpen(open) {
     menu.hidden = !open;

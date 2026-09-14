@@ -14,8 +14,8 @@ const productionOrigin = (
 ).replace(/\/$/, "");
 
 const responsiveAssets = [
-  '<link rel="stylesheet" href="/responsive.css?v=20260914-1">',
-  '<script src="/responsive.js" defer></script>',
+  '<link rel="stylesheet" href="/responsive.css?v=20260914-2">',
+  '<script src="/responsive.js?v=20260914-2" defer></script>',
 ].join("\n");
 
 const compactServicesMenuMarkup = `<div class="services-menu services-menu-compact"><div class="services-columns"><div class="services-group"><p>Demolition</p><a href="/residential-demolition" target="_top"><strong>Residential Demolition</strong></a><a href="/commercial-demolition" target="_top"><strong>Commercial Demolition</strong></a><a href="/selective-demolition" target="_top"><strong>Selective Demolition</strong></a><a href="/emergency-demolition" target="_top"><strong>Emergency Demolition</strong></a><a href="/mobile-home-demolition" target="_top"><strong>Mobile Home Demolition</strong></a><a href="/concrete-foundation-removal" target="_top"><strong>Concrete &amp; Foundation Removal</strong></a></div><div class="services-group"><p>Site &amp; Property Work</p><a href="/land-clearing" target="_top"><strong>Land Clearing</strong></a><a href="/site-preparation" target="_top"><strong>Site Preparation</strong></a><a href="/pool-removal" target="_top"><strong>Pool Removal</strong></a><a href="/debris-removal-hauling" target="_top"><strong>Debris Removal &amp; Hauling</strong></a></div></div><div class="services-menu-actions"><a href="/" target="_top">View All Services <span aria-hidden="true">↗</span></a><a href="/contact" target="_top">Request a Free Estimate <span aria-hidden="true">↗</span></a></div></div>`;

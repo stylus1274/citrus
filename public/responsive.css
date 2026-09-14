@@ -27,6 +27,17 @@
   line-height: 1.02 !important;
 }
 
+#citrus-demolition-services-redesign .site-header {
+  position: sticky !important;
+  top: 0;
+  z-index: 900 !important;
+  transition: box-shadow .18s ease;
+}
+
+#citrus-demolition-services-redesign .site-header.is-stuck {
+  box-shadow: 0 5px 18px rgba(0, 0, 0, .12);
+}
+
 #citrus-demolition-services-redesign .mobile-menu-toggle,
 #citrus-demolition-services-redesign .mobile-menu {
   display: none;
