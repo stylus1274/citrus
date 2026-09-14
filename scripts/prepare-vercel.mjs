@@ -14,7 +14,7 @@ const productionOrigin = (
 ).replace(/\/$/, "");
 
 const responsiveAssets = [
-  '<link rel="stylesheet" href="/responsive.css?v=20260914-2">',
+  '<link rel="stylesheet" href="/responsive.css?v=20260914-3">',
   '<script src="/responsive.js?v=20260914-2" defer></script>',
 ].join("\n");
 
