@@ -192,7 +192,7 @@ function reduceHeadingFontSizes(html) {
         throw new Error(`A mixed H1 and H2-H6 font-size rule cannot use the global heading adjustment: ${selectors.trim()}`);
       }
 
-      const reduction = levels.has("1") ? 6 : 4;
+      const reduction = levels.has("1") ? 10 : 8;
       const adjustedDeclarations = declarations.replace(
         /font-size\s*:\s*([^;}]+)(;?)/gi,
         (_, value, terminator) => `font-size: calc(${value.trim()} - ${reduction}px)${terminator}`,
