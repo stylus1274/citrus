@@ -14,29 +14,9 @@ const productionOrigin = (
 ).replace(/\/$/, "");
 
 const responsiveAssets = [
-  '<link rel="stylesheet" href="/responsive.css?v=20260914-3">',
-  '<script src="/responsive.js?v=20260914-2" defer></script>',
+  '<link rel="stylesheet" href="/responsive.css">',
+  '<script src="/responsive.js" defer></script>',
 ].join("\n");
-
-const compactServicesMenuMarkup = `<div class="services-menu services-menu-compact"><div class="services-columns"><div class="services-group"><p>Demolition</p><a href="/residential-demolition" target="_top"><strong>Residential Demolition</strong></a><a href="/commercial-demolition" target="_top"><strong>Commercial Demolition</strong></a><a href="/selective-demolition" target="_top"><strong>Selective Demolition</strong></a><a href="/emergency-demolition" target="_top"><strong>Emergency Demolition</strong></a><a href="/mobile-home-demolition" target="_top"><strong>Mobile Home Demolition</strong></a><a href="/concrete-foundation-removal" target="_top"><strong>Concrete &amp; Foundation Removal</strong></a></div><div class="services-group"><p>Site &amp; Property Work</p><a href="/land-clearing" target="_top"><strong>Land Clearing</strong></a><a href="/site-preparation" target="_top"><strong>Site Preparation</strong></a><a href="/pool-removal" target="_top"><strong>Pool Removal</strong></a><a href="/debris-removal-hauling" target="_top"><strong>Debris Removal &amp; Hauling</strong></a></div></div><div class="services-menu-actions"><a href="/" target="_top">View All Services <span aria-hidden="true">↗</span></a><a href="/contact" target="_top">Request a Free Estimate <span aria-hidden="true">↗</span></a></div></div>`;
-
-function compactDesktopServicesMenu(html) {
-  const menuPattern = /<div class="services-menu">[\s\S]*?<\/div><\/div>(?=<div class="services-dropdown areas-dropdown)/;
-  if (!menuPattern.test(html)) {
-    throw new Error("A source page is missing the expected desktop services menu.");
-  }
-  return html.replace(menuPattern, `${compactServicesMenuMarkup}</div>`);
-}
-
-const compactAreasMenuMarkup = '<div class="services-menu areas-menu areas-menu-compact"><p class="areas-menu-head">Service Areas</p><div class="areas-compact-grid"><a class="area-compact-link" href="/brooksville" target="_top">Brooksville</a><a class="area-compact-link" href="/spring-hill" target="_top">Spring Hill</a><a class="area-compact-link" href="/inverness" target="_top">Inverness</a><a class="area-compact-link" href="/hernando" target="_top">Hernando County</a></div><a class="areas-compact-action" href="/contact" target="_top">Check Your Address <span aria-hidden="true">↗</span></a></div>';
-
-function compactServiceAreasMenu(html) {
-  const areaMenuPattern = /<div class="services-menu areas-menu">[\s\S]*?<\/div><\/div>(?=<a\b[^>]*>Projects<\/a>)/;
-  if (!areaMenuPattern.test(html)) {
-    throw new Error("A source page is missing the expected service areas menu.");
-  }
-  return html.replace(areaMenuPattern, compactAreasMenuMarkup + "</div>");
-}
 
 const mobileMenuMarkup = `
 <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" hidden>
@@ -205,7 +185,7 @@ function prepareDocument(html, filename) {
   const canonicalUrl = `${productionOrigin}${route === "/" ? "/" : route}`;
   const title = pageTitle(html, filename);
   const description = pageDescription(html);
-  let prepared = compactServiceAreasMenu(compactDesktopServicesMenu(cleanInternalUrls(html)))
+  let prepared = cleanInternalUrls(html)
     .replace(/<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>\s*/gi, "")
     .replace(/<meta\b[^>]*name=["']description["'][^>]*>\s*/gi, "")
     .replace(/<link\b[^>]*rel=["']canonical["'][^>]*>\s*/gi, "")
@@ -270,12 +250,30 @@ async function main() {
     const standaloneHtml = prepareDocument(extractInnerDocument(wrapper, filename), filename);
     await writeFile(path.join(outputDirectory, outputName), await extractEmbeddedImages(standaloneHtml), "utf8");
   }
-  const sitemapUrls = [...new Set(Object.values(routeByFile))].sort().map((route) => {
+  const blogHtml = extractInnerDocument(
+    await readFile(path.join(sourceDirectory, "blog.html"), "utf8"),
+    "blog.html",
+  );
+  const postRoutes = new Set(
+    [...blogHtml.matchAll(/<article\b[^>]*class=["'][^"']*\barticle-card\b[^"']*["'][\s\S]*?<a\b[^>]*href=["'](\/[^"'#?]+)["']/gi)]
+      .map((match) => match[1].replace(/\/$/, "") || "/"),
+  );
+  const allRoutes = [...new Set(Object.values(routeByFile))].sort();
+  const pageRoutes = allRoutes.filter((route) => !postRoutes.has(route));
+  if (postRoutes.size + pageRoutes.length !== allRoutes.length) {
+    throw new Error("The post and page sitemap routes do not cover every public route exactly once.");
+  }
+  const sitemapXml = (routes) => {
+    const sitemapUrls = routes.map((route) => {
     const url = `${productionOrigin}${route === "/" ? "/" : route}`;
     return `  <url><loc>${url}</loc></url>`;
-  }).join("\n");
-  await writeFile(path.join(publicDirectory, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls}\n</urlset>\n`, "utf8");
-  await writeFile(path.join(publicDirectory, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${productionOrigin}/sitemap.xml\n`, "utf8");
+    }).join("\n");
+    return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls}\n</urlset>\n`;
+  };
+  await rm(path.join(publicDirectory, "sitemap.xml"), { force: true });
+  await writeFile(path.join(publicDirectory, "post-sitemap.xml"), sitemapXml([...postRoutes].sort()), "utf8");
+  await writeFile(path.join(publicDirectory, "page-sitemap.xml"), sitemapXml(pageRoutes), "utf8");
+  await writeFile(path.join(publicDirectory, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${productionOrigin}/post-sitemap.xml\nSitemap: ${productionOrigin}/page-sitemap.xml\n`, "utf8");
   const assets = await readdir(assetsDirectory);
   console.log(`Prepared ${files.length} pages and ${assets.length} optimized static assets for Next.js and Vercel.`);
 }

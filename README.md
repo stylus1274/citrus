@@ -23,7 +23,7 @@ npm run build
 npm run start
 ```
 
-The preparation step runs automatically before development and production builds. It converts the approved static design files into standalone, crawlable pages and generates canonical metadata, `robots.txt`, and `sitemap.xml`.
+The preparation step runs automatically before development and production builds. It converts the approved static design files into standalone, crawlable pages and generates canonical metadata, `robots.txt`, `post-sitemap.xml`, and `page-sitemap.xml`.
 
 ## Deploy to Vercel from GitHub
 
@@ -42,6 +42,6 @@ No Vercel-specific configuration file is required.
 - Optimized, deduplicated image sources live in `site-assets/`.
 - `scripts/prepare-vercel.mjs` publishes the pages and assets during each build.
 - Clean public routes and legacy redirects are declared in `next.config.ts`.
-- Generated files in `public/_site`, `public/_site-assets`, `public/sitemap.xml`, and `public/robots.txt` are intentionally excluded from Git because Vercel rebuilds them.
+- Generated files in `public/_site`, `public/_site-assets`, `public/post-sitemap.xml`, `public/page-sitemap.xml`, and `public/robots.txt` are intentionally excluded from Git because Vercel rebuilds them.
 
 When a new page is added, add its filename and canonical route to `routeByFile` in `scripts/prepare-vercel.mjs`, then add the matching rewrite in `next.config.ts`.

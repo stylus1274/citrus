@@ -47,4 +47,6 @@ next-env.d.ts
 /public/_site/
 /public/_site-assets/
 /public/sitemap.xml
+/public/post-sitemap.xml
+/public/page-sitemap.xml
 /public/robots.txt

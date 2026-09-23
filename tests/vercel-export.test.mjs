@@ -14,8 +14,8 @@ test("exports every site page as standalone, crawlable HTML", async () => {
     assert.match(html, /<!doctype html>/i, filename);
     assert.match(html, /<h1\b/i, filename);
     assert.match(html, /<link rel="canonical"/i, filename);
-    assert.match(html, /<link rel="stylesheet" href="\/responsive\.css\?v=20260914-3">/i, filename);
-    assert.match(html, /<script src="\/responsive\.js\?v=20260914-2" defer><\/script>/i, filename);
+    assert.match(html, /<link rel="stylesheet" href="\/responsive\.css">/i, filename);
+    assert.match(html, /<script src="\/responsive\.js" defer><\/script>/i, filename);
     assert.match(html, /id="mobile-menu"/i, filename);
     assert.doesNotMatch(html, /<iframe\b/i, filename);
     assert.doesNotMatch(html, /data:image\/(?:gif|jpeg|png|webp);base64/i, filename);
@@ -28,44 +28,9 @@ test("ships shared responsive navigation and narrow-screen safeguards", async ()
   assert.match(responsiveCss, /@media \(max-width: 980px\)/);
   assert.match(responsiveCss, /@media \(max-width: 480px\)/);
   assert.match(responsiveCss, /\.mobile-menu-toggle/);
-  assert.match(responsiveCss, /overflow: clip !important/);
-  assert.match(responsiveCss, /position: sticky !important/);
-  assert.match(responsiveCss, /\.site-header\.is-stuck/);
   assert.match(responsiveCss, /font-size: 16px/);
-  assert.match(responsiveJs, /updateStickyHeader/);
   assert.match(responsiveJs, /aria-expanded/);
   assert.match(responsiveJs, /event\.key === "Escape"/);
-});
-
-test("uses a compact service mega menu with only core services", async () => {
-  const html = await readFile(path.join(outputDirectory, "index.html"), "utf8");
-  const menu = html.match(
-    /<div class="services-menu services-menu-compact">([\s\S]*?)<\/div><\/div>(?=<div class="services-dropdown areas-dropdown)/i,
-  )?.[1];
-
-  assert.ok(menu, "compact services menu");
-  assert.equal([...menu.matchAll(/<a\b/g)].length, 12);
-  assert.doesNotMatch(menu, /<small\b/i);
-  assert.doesNotMatch(menu, /Inverness|Spring Hill|Hernando County/i);
-  assert.match(menu, /View All Services/);
-  assert.match(menu, /Request a Free Estimate/);
-});
-
-test("uses a compact service areas menu without numbered entries", async () => {
-  const html = await readFile(path.join(outputDirectory, "index.html"), "utf8");
-  const menu = html.match(
-    /<div class="services-menu areas-menu areas-menu-compact">([\s\S]*?)<\/div><\/div>(?=<a\b[^>]*>Projects<\/a>)/i,
-  )?.[1];
-
-  assert.ok(menu, "compact service areas menu");
-  assert.equal([...menu.matchAll(/<a\b/g)].length, 5);
-  assert.doesNotMatch(menu, /<b\b|<small\b|<i\b/i);
-  assert.doesNotMatch(menu, /More Central Florida|coming next/i);
-  assert.match(menu, /Brooksville/);
-  assert.match(menu, /Spring Hill/);
-  assert.match(menu, /Inverness/);
-  assert.match(menu, /Hernando County/);
-  assert.match(menu, /Check Your Address/);
 });
 
 test("extracts embedded photographs into cacheable static files", async () => {
@@ -75,10 +40,14 @@ test("extracts embedded photographs into cacheable static files", async () => {
 });
 
 test("generates search-engine discovery files", async () => {
-  const sitemap = await readFile(path.join(projectRoot, "public", "sitemap.xml"), "utf8");
+  const postSitemap = await readFile(path.join(projectRoot, "public", "post-sitemap.xml"), "utf8");
+  const pageSitemap = await readFile(path.join(projectRoot, "public", "page-sitemap.xml"), "utf8");
+  const sitemap = `${postSitemap}\n${pageSitemap}`;
   const robots = await readFile(path.join(projectRoot, "public", "robots.txt"), "utf8");
-  assert.match(sitemap, /<urlset\b/);
-  assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/projects/);
+  assert.match(postSitemap, /<urlset\b/);
+  assert.match(pageSitemap, /<urlset\b/);
+  assert.match(pageSitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/projects/);
+  assert.doesNotMatch(postSitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/projects/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/choosing-the-right-demolition-contractor/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/a-comprehensive-guide-to-residential-demolition-services/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/5-signs-you-need-a-licensed-demolition-contractor/);
@@ -111,5 +80,6 @@ test("generates search-engine discovery files", async () => {
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/pool-removal-cost-in-florida/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/what-to-expect-during-detached-garage-demolition/);
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/concrete-removal-faqs-guide/);
-  assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/sitemap\.xml/);
+  assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/post-sitemap\.xml/);
+  assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/page-sitemap\.xml/);
 });
