@@ -181,12 +181,34 @@ function cleanInternalUrls(html) {
   return cleaned.replace(/href=["']{2}/gi, 'href="/"');
 }
 
+function reduceHeadingFontSizes(html) {
+  return html.replace(/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi, (_, openingTag, css, closingTag) => {
+    const adjustedCss = css.replace(/([^{}]+)\{([^{}]*)\}/g, (rule, selectors, declarations) => {
+      const headings = [...selectors.matchAll(/(?:^|[\s>+~,])h([1-6])\b/gi)];
+      if (headings.length === 0 || !/font-size\s*:/i.test(declarations)) return rule;
+
+      const levels = new Set(headings.map((match) => match[1]));
+      if (levels.has("1") && levels.size > 1) {
+        throw new Error(`A mixed H1 and H2-H6 font-size rule cannot use the global heading adjustment: ${selectors.trim()}`);
+      }
+
+      const reduction = levels.has("1") ? 6 : 4;
+      const adjustedDeclarations = declarations.replace(
+        /font-size\s*:\s*([^;}]+)(;?)/gi,
+        (_, value, terminator) => `font-size: calc(${value.trim()} - ${reduction}px)${terminator}`,
+      );
+      return `${selectors}{${adjustedDeclarations}}`;
+    });
+    return `${openingTag}${adjustedCss}${closingTag}`;
+  });
+}
+
 function prepareDocument(html, filename) {
   const route = routeByFile[filename];
   const canonicalUrl = `${productionOrigin}${route === "/" ? "/" : route}`;
   const title = pageTitle(html, filename);
   const description = pageDescription(html);
-  let prepared = cleanInternalUrls(html)
+  let prepared = reduceHeadingFontSizes(cleanInternalUrls(html))
     .replace(/<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>\s*/gi, "")
     .replace(/<meta\b[^>]*name=["']description["'][^>]*>\s*/gi, "")
     .replace(/<link\b[^>]*rel=["']canonical["'][^>]*>\s*/gi, "")

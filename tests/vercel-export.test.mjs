@@ -33,6 +33,13 @@ test("ships shared responsive navigation and narrow-screen safeguards", async ()
   assert.match(responsiveJs, /event\.key === "Escape"/);
 });
 
+test("reduces heading sizes globally while preserving the larger H1 adjustment", async () => {
+  const html = await readFile(path.join(outputDirectory, "index.html"), "utf8");
+  assert.match(html, /font-size:\s*calc\(clamp\(45px,\s*6\.5vw,\s*92px\) - 6px\)/);
+  assert.match(html, /font-size:\s*calc\(clamp\(44px,\s*6\.1vw,\s*82px\) - 4px\)/);
+  assert.match(html, /font-size:\s*calc\(clamp\(29px,\s*3vw,\s*44px\) - 4px\)/);
+});
+
 test("extracts embedded photographs into cacheable static files", async () => {
   const assets = await readdir(path.join(projectRoot, "public", "_site-assets"));
   assert.ok(assets.length > 10);
