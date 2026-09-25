@@ -33,6 +33,21 @@ test("ships shared responsive navigation and narrow-screen safeguards", async ()
   assert.match(responsiveJs, /event\.key === "Escape"/);
 });
 
+test("connects every estimate form to the shared email endpoint", async () => {
+  const responsiveJs = await readFile(path.join(projectRoot, "public", "responsive.js"), "utf8");
+  assert.match(responsiveJs, /fetch\("\/api\/contact"/);
+  assert.match(responsiveJs, /form-status/);
+  assert.match(responsiveJs, /generate_lead/);
+
+  const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
+  for (const filename of files) {
+    const html = await readFile(path.join(outputDirectory, filename), "utf8");
+    if (html.includes('class="estimate-form"')) {
+      assert.match(html, /<script src="\/responsive\.js" defer><\/script>/, filename);
+    }
+  }
+});
+
 test("reduces heading sizes globally while preserving the larger H1 adjustment", async () => {
   const html = await readFile(path.join(outputDirectory, "index.html"), "utf8");
   assert.match(html, /font-size:\s*calc\(clamp\(45px,\s*6\.5vw,\s*92px\) - 10px\)/);
