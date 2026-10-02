@@ -13,6 +13,8 @@ const productionOrigin = (
   "https://www.citrusdemolitionandlandclearing.com"
 ).replace(/\/$/, "");
 
+const withTrailingSlash = (route) => route === "/" ? "/" : `${route.replace(/\/+$/, "")}/`;
+
 const responsiveAssets = [
   '<link rel="stylesheet" href="/responsive.css">',
   '<script src="/responsive.js" defer></script>',
@@ -178,6 +180,16 @@ function cleanInternalUrls(html) {
   let cleaned = html;
   const routes = Object.entries(routeByFile).sort(([left], [right]) => right.length - left.length);
   for (const [filename, route] of routes) cleaned = cleaned.replaceAll(`/${filename}`, route);
+  const publicRoutes = [...new Set(Object.values(routeByFile))]
+    .filter((route) => route !== "/")
+    .sort((left, right) => right.length - left.length);
+  for (const route of publicRoutes) {
+    const escapedRoute = route.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    cleaned = cleaned.replace(
+      new RegExp(`(href=["'])${escapedRoute}(?=(?:[?#][^"']*)?["'])`, "gi"),
+      `$1${withTrailingSlash(route)}`,
+    );
+  }
   return cleaned.replace(/href=["']{2}/gi, 'href="/"');
 }
 
@@ -205,7 +217,7 @@ function reduceHeadingFontSizes(html) {
 
 function prepareDocument(html, filename) {
   const route = routeByFile[filename];
-  const canonicalUrl = `${productionOrigin}${route === "/" ? "/" : route}`;
+  const canonicalUrl = `${productionOrigin}${withTrailingSlash(route)}`;
   const title = pageTitle(html, filename);
   const description = pageDescription(html);
   let prepared = reduceHeadingFontSizes(cleanInternalUrls(html))
@@ -225,7 +237,7 @@ function prepareDocument(html, filename) {
   prepared = prepared.replace(/<\/head>/i, `${metadata}\n${responsiveAssets}\n</head>`);
   prepared = prepared.replace(
     /(<header\b[\s\S]*?<\/header>)/i,
-    `$1${mobileMenuMarkup}`,
+    `$1${cleanInternalUrls(mobileMenuMarkup)}`,
   );
   return `<!-- Generated from site-source/${filename} by scripts/prepare-vercel.mjs. -->\n${prepared}`;
 }
@@ -273,22 +285,22 @@ async function main() {
     const standaloneHtml = prepareDocument(extractInnerDocument(wrapper, filename), filename);
     await writeFile(path.join(outputDirectory, outputName), await extractEmbeddedImages(standaloneHtml), "utf8");
   }
-  const blogHtml = extractInnerDocument(
+  const blogHtml = cleanInternalUrls(extractInnerDocument(
     await readFile(path.join(sourceDirectory, "blog.html"), "utf8"),
     "blog.html",
-  );
+  ));
   const postRoutes = new Set(
     [...blogHtml.matchAll(/<article\b[^>]*class=["'][^"']*\barticle-card\b[^"']*["'][\s\S]*?<a\b[^>]*href=["'](\/[^"'#?]+)["']/gi)]
-      .map((match) => match[1].replace(/\/$/, "") || "/"),
+      .map((match) => withTrailingSlash(match[1])),
   );
-  const allRoutes = [...new Set(Object.values(routeByFile))].sort();
+  const allRoutes = [...new Set(Object.values(routeByFile).map(withTrailingSlash))].sort();
   const pageRoutes = allRoutes.filter((route) => !postRoutes.has(route));
   if (postRoutes.size + pageRoutes.length !== allRoutes.length) {
     throw new Error("The post and page sitemap routes do not cover every public route exactly once.");
   }
   const sitemapXml = (routes) => {
     const sitemapUrls = routes.map((route) => {
-    const url = `${productionOrigin}${route === "/" ? "/" : route}`;
+    const url = `${productionOrigin}${withTrailingSlash(route)}`;
     return `  <url><loc>${url}</loc></url>`;
     }).join("\n");
     return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls}\n</urlset>\n`;

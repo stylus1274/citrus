@@ -1,22 +1,25 @@
 import type { NextConfig } from "next";
 
+const withTrailingSlash = (route: string) => route === "/" ? "/" : `${route.replace(/\/+$/, "")}/`;
+
 const nextConfig: NextConfig = {
+  trailingSlash: true,
   async redirects() {
     return [
       { source: "/design.html", destination: "/", permanent: true },
-      { source: "/hernando-residential-demolition", destination: "/hernando/residential-demolition", permanent: true },
-      { source: "/inverness-commercial-demolition", destination: "/inverness/commercial-demolition", permanent: true },
-      { source: "/inverness-demolition", destination: "/inverness/demolition", permanent: true },
-      { source: "/inverness-land-clearing", destination: "/inverness/land-clearing", permanent: true },
-      { source: "/inverness-residential-demolition", destination: "/inverness/residential-demolition", permanent: true },
-      { source: "/inverness-site-preparation", destination: "/inverness/site-prep", permanent: true },
-      { source: "/spring-hill-land-clearing", destination: "/spring-hill/land-clearing", permanent: true },
-      { source: "/demolition-waste-florida-guide.html", destination: "/demolition-waste-florida-guide", permanent: true },
-      { source: "/pool-removal-cost-in-florida.html", destination: "/pool-removal-cost-in-florida", permanent: true },
-      { source: "/mobile-home-demolition-cost-florida.html", destination: "/mobile-home-demolition-cost-florida", permanent: true },
-      { source: "/what-to-expect-during-detached-garage-demolition.html", destination: "/what-to-expect-during-detached-garage-demolition", permanent: true },
-      { source: "/concrete-removal-faqs-guide.html", destination: "/concrete-removal-faqs-guide", permanent: true },
-      ...["5-signs-you-need-a-licensed-demolition-contractor", "a-comprehensive-guide-to-residential-demolition-services", "blog", "brooksville", "can-you-demolish-a-house-with-asbestos-florida", "choose-foundation-demolition-contractor-crystal-river-fl", "choosing-the-right-demolition-contractor", "commercial-demolition", "concrete-foundation-removal", "contact", "crystal-river-debris-removal-after-demolition", "debris-removal-hauling", "demolition-excavation-services-citrus-county-fl", "demolition-permits-citrus-county-fl", "emergency-demolition-crystal-river", "emergency-demolition", "environmental-impact-old-building-demolition", "foundation-slab-removal-required-pricing", "hernando-residential-demolition", "hernando", "house-demolition-cost", "house-demolition-cost-citrus-county-guide", "house-demolition-permit-crystal-river", "how-long-does-it-take-to-demolish-a-house-in-crystal-river-fl", "hurricane-damaged-house-demolition-in-citrus-county", "inverness-commercial-demolition", "inverness-demolition", "inverness-land-clearing", "inverness-residential-demolition", "inverness-site-preparation", "inverness", "land-clearing", "land-preparation-after-demolition-citrus-county", "licensed-residential-demolition-contractor-crystal-river-fl", "marion-county-residential-demolition-faq", "mobile-home-demolition", "mobile-home-demolition-contractor-license-insurance-crystal-river-fl", "mobile-home-demolition-contractor-services-crystal-river-fl", "mobile-home-demolition-services-citrus-county", "mobile-home-demolition-vs-removal-central-florida", "pool-removal", "projects", "residential-contractor-florida", "residential-demolition", "selective-demolition", "site-preparation-services-crystal-river-fl", "site-preparation", "spring-hill-land-clearing", "spring-hill", "storm-damage-repair-vs-demolition-west-central-florida", "top-signs-property-needs-emergency-demolition-florida", "total-demolition-faq", "understanding-hidden-costs-residential-demolition", "whats-the-difference-between-cleanup-and-demolition", "who-removes-old-mobile-homes-crystal-river-fl", "why-citrus"].map((slug) => ({ source: `/${slug}.html`, destination: `/${slug}`, permanent: true })),
+      { source: withTrailingSlash("/hernando-residential-demolition"), destination: withTrailingSlash("/hernando/residential-demolition"), permanent: true },
+      { source: withTrailingSlash("/inverness-commercial-demolition"), destination: withTrailingSlash("/inverness/commercial-demolition"), permanent: true },
+      { source: withTrailingSlash("/inverness-demolition"), destination: withTrailingSlash("/inverness/demolition"), permanent: true },
+      { source: withTrailingSlash("/inverness-land-clearing"), destination: withTrailingSlash("/inverness/land-clearing"), permanent: true },
+      { source: withTrailingSlash("/inverness-residential-demolition"), destination: withTrailingSlash("/inverness/residential-demolition"), permanent: true },
+      { source: withTrailingSlash("/inverness-site-preparation"), destination: withTrailingSlash("/inverness/site-prep"), permanent: true },
+      { source: withTrailingSlash("/spring-hill-land-clearing"), destination: withTrailingSlash("/spring-hill/land-clearing"), permanent: true },
+      { source: "/demolition-waste-florida-guide.html", destination: withTrailingSlash("/demolition-waste-florida-guide"), permanent: true },
+      { source: "/pool-removal-cost-in-florida.html", destination: withTrailingSlash("/pool-removal-cost-in-florida"), permanent: true },
+      { source: "/mobile-home-demolition-cost-florida.html", destination: withTrailingSlash("/mobile-home-demolition-cost-florida"), permanent: true },
+      { source: "/what-to-expect-during-detached-garage-demolition.html", destination: withTrailingSlash("/what-to-expect-during-detached-garage-demolition"), permanent: true },
+      { source: "/concrete-removal-faqs-guide.html", destination: withTrailingSlash("/concrete-removal-faqs-guide"), permanent: true },
+      ...["5-signs-you-need-a-licensed-demolition-contractor", "a-comprehensive-guide-to-residential-demolition-services", "blog", "brooksville", "can-you-demolish-a-house-with-asbestos-florida", "choose-foundation-demolition-contractor-crystal-river-fl", "choosing-the-right-demolition-contractor", "commercial-demolition", "concrete-foundation-removal", "contact", "crystal-river-debris-removal-after-demolition", "debris-removal-hauling", "demolition-excavation-services-citrus-county-fl", "demolition-permits-citrus-county-fl", "emergency-demolition-crystal-river", "emergency-demolition", "environmental-impact-old-building-demolition", "foundation-slab-removal-required-pricing", "hernando-residential-demolition", "hernando", "house-demolition-cost", "house-demolition-cost-citrus-county-guide", "house-demolition-permit-crystal-river", "how-long-does-it-take-to-demolish-a-house-in-crystal-river-fl", "hurricane-damaged-house-demolition-in-citrus-county", "inverness-commercial-demolition", "inverness-demolition", "inverness-land-clearing", "inverness-residential-demolition", "inverness-site-preparation", "inverness", "land-clearing", "land-preparation-after-demolition-citrus-county", "licensed-residential-demolition-contractor-crystal-river-fl", "marion-county-residential-demolition-faq", "mobile-home-demolition", "mobile-home-demolition-contractor-license-insurance-crystal-river-fl", "mobile-home-demolition-contractor-services-crystal-river-fl", "mobile-home-demolition-services-citrus-county", "mobile-home-demolition-vs-removal-central-florida", "pool-removal", "projects", "residential-contractor-florida", "residential-demolition", "selective-demolition", "site-preparation-services-crystal-river-fl", "site-preparation", "spring-hill-land-clearing", "spring-hill", "storm-damage-repair-vs-demolition-west-central-florida", "top-signs-property-needs-emergency-demolition-florida", "total-demolition-faq", "understanding-hidden-costs-residential-demolition", "whats-the-difference-between-cleanup-and-demolition", "who-removes-old-mobile-homes-crystal-river-fl", "why-citrus"].map((slug) => ({ source: `/${slug}.html`, destination: withTrailingSlash(`/${slug}`), permanent: true })),
     ];
   },
   async rewrites() {
@@ -84,7 +87,7 @@ const nextConfig: NextConfig = {
         { source: "/what-to-expect-during-detached-garage-demolition", destination: "/_site/what-to-expect-during-detached-garage-demolition.html" },
         { source: "/who-removes-old-mobile-homes-crystal-river-fl", destination: "/_site/who-removes-old-mobile-homes-crystal-river-fl.html" },
         { source: "/why-citrus", destination: "/_site/why-citrus.html" },
-      ],
+      ].map(({ source, destination }) => ({ source: withTrailingSlash(source), destination })),
       afterFiles: [],
       fallback: [],
     };

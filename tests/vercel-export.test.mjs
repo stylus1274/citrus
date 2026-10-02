@@ -105,4 +105,30 @@ test("generates search-engine discovery files", async () => {
   assert.match(sitemap, /https:\/\/www\.citrusdemolitionandlandclearing\.com\/concrete-removal-faqs-guide/);
   assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/post-sitemap\.xml/);
   assert.match(robots, /Sitemap: https:\/\/www\.citrusdemolitionandlandclearing\.com\/page-sitemap\.xml/);
+
+  const sitemapUrls = [...sitemap.matchAll(/<loc>(https:\/\/[^<]+)<\/loc>/g)].map((match) => match[1]);
+  assert.ok(sitemapUrls.length > 0);
+  assert.ok(sitemapUrls.every((url) => new URL(url).pathname === "/" || new URL(url).pathname.endsWith("/")));
+});
+
+test("uses trailing slashes in canonical URLs and internal navigation", async () => {
+  const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
+  const publicPaths = new Set(
+    files.map((filename) => filename === "index.html" ? "/" : `/${filename.replace(/\.html$/, "")}`),
+  );
+
+  for (const filename of files) {
+    const html = await readFile(path.join(outputDirectory, filename), "utf8");
+    const canonical = html.match(/<link rel="canonical" href="([^"]+)">/i)?.[1];
+    assert.ok(canonical, filename);
+    const canonicalPath = new URL(canonical).pathname;
+    assert.ok(canonicalPath === "/" || canonicalPath.endsWith("/"), `${filename}: ${canonical}`);
+
+    for (const match of html.matchAll(/href=["'](\/[^"'#?]*)/gi)) {
+      const hrefPath = match[1];
+      if (publicPaths.has(hrefPath.replace(/\/$/, ""))) {
+        assert.ok(hrefPath === "/" || hrefPath.endsWith("/"), `${filename}: ${hrefPath}`);
+      }
+    }
+  }
 });
