@@ -45,6 +45,12 @@ test("stacks the full-width estimate button below the mobile logo and menu", asy
   assert.match(responsiveJs, /--mobile-menu-top/);
 });
 
+test("hides only the hero pre-heading on mobile", async () => {
+  const responsiveCss = await readFile(path.join(projectRoot, "public", "responsive.css"), "utf8");
+  assert.match(responsiveCss, /@media \(max-width: 720px\)[\s\S]*?\.hero-content > \.eyebrow \{[\s\S]*?display: none/);
+  assert.doesNotMatch(responsiveCss, /@media \(max-width: 720px\)[\s\S]*?\n\s*#citrus-demolition-services-redesign \.eyebrow \{[\s\S]*?display: none/);
+});
+
 test("does not ship placeholder or known dead internal links", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
   for (const filename of files) {
