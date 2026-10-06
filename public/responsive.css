@@ -389,6 +389,54 @@ body.citrus-menu-lock {
     width: 44px;
     height: 44px;
   }
+
+  #citrus-demolition-services-redesign .mobile-menu:not([hidden]) {
+    top: var(--mobile-menu-top, 0px);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 18px 20px 32px;
+  }
+
+  #citrus-demolition-services-redesign .mobile-menu-close {
+    width: 44px;
+    height: 44px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    font-size: 30px;
+  }
+
+  #citrus-demolition-services-redesign .mobile-menu-inner {
+    margin-top: 6px;
+  }
+
+  #citrus-demolition-services-redesign .mobile-menu-label {
+    margin-bottom: 14px;
+    font-size: 11px;
+  }
+
+  #citrus-demolition-services-redesign .mobile-menu summary,
+  #citrus-demolition-services-redesign .mobile-menu-primary-link {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    font-size: clamp(25px, 7.2vw, 30px);
+  }
+
+  #citrus-demolition-services-redesign .mobile-menu summary::after {
+    float: none;
+    margin-left: 14px;
+  }
+
+  #citrus-demolition-services-redesign .mobile-menu-estimate {
+    min-height: 54px;
+    margin-top: 24px;
+    padding: 16px;
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 390px) {
@@ -509,17 +557,33 @@ body.citrus-menu-lock {
 
 @media (max-width: 480px) {
   #citrus-demolition-services-redesign .site-header {
-    grid-template-columns: minmax(0, 1fr) auto;
-    padding-left: 16px;
-    padding-right: 16px;
+    min-height: 72px;
+    grid-template-columns: minmax(104px, 1fr) auto 42px;
+    gap: 6px;
+    padding-left: 9px;
+    padding-right: 9px;
   }
 
   #citrus-demolition-services-redesign .brand img {
-    width: 145px;
+    width: clamp(112px, 34vw, 132px);
   }
 
   #citrus-demolition-services-redesign .header-cta {
+    min-height: 40px;
+    display: inline-flex;
+    padding: 10px 9px;
+    gap: 0;
+    font-size: 9px;
+    letter-spacing: .06em;
+  }
+
+  #citrus-demolition-services-redesign .header-cta span {
     display: none;
+  }
+
+  #citrus-demolition-services-redesign .mobile-menu-toggle {
+    width: 42px;
+    height: 42px;
   }
 
   #citrus-demolition-services-redesign .trust-strip,
