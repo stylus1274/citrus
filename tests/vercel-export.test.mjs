@@ -42,6 +42,15 @@ test("keeps the estimate button in the small-phone header", async () => {
   assert.match(responsiveJs, /--mobile-menu-top/);
 });
 
+test("does not ship placeholder or known dead internal links", async () => {
+  const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
+  for (const filename of files) {
+    const html = await readFile(path.join(outputDirectory, filename), "utf8");
+    assert.doesNotMatch(html, /<a\b[^>]*href=["']#["']/i, filename);
+    assert.doesNotMatch(html, /commercial-land-clearing-tampa-bay/i, filename);
+  }
+});
+
 test("connects every estimate form to the shared email endpoint", async () => {
   const responsiveJs = await readFile(path.join(projectRoot, "public", "responsive.js"), "utf8");
   assert.match(responsiveJs, /fetch\("\/api\/contact"/);
