@@ -33,6 +33,15 @@ test("ships shared responsive navigation and narrow-screen safeguards", async ()
   assert.match(responsiveJs, /event\.key === "Escape"/);
 });
 
+test("keeps the estimate button in the small-phone header", async () => {
+  const responsiveCss = await readFile(path.join(projectRoot, "public", "responsive.css"), "utf8");
+  const responsiveJs = await readFile(path.join(projectRoot, "public", "responsive.js"), "utf8");
+  assert.match(responsiveCss, /@media \(max-width: 480px\)[\s\S]*?grid-template-columns: minmax\(104px, 1fr\) auto 42px/);
+  assert.match(responsiveCss, /@media \(max-width: 480px\)[\s\S]*?\.header-cta \{[\s\S]*?display: inline-flex/);
+  assert.doesNotMatch(responsiveCss, /@media \(max-width: 480px\)[\s\S]*?\.header-cta \{[^}]*display: none/);
+  assert.match(responsiveJs, /--mobile-menu-top/);
+});
+
 test("connects every estimate form to the shared email endpoint", async () => {
   const responsiveJs = await readFile(path.join(projectRoot, "public", "responsive.js"), "utf8");
   assert.match(responsiveJs, /fetch\("\/api\/contact"/);
