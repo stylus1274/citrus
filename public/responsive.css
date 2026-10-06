@@ -361,6 +361,10 @@ body.citrus-menu-lock {
 }
 
 @media (max-width: 720px) {
+  #citrus-demolition-services-redesign .hero-content > .eyebrow {
+    display: none;
+  }
+
   #citrus-demolition-services-redesign .site-header {
     grid-template-columns: minmax(118px, 1fr) 44px;
     gap: 8px;
