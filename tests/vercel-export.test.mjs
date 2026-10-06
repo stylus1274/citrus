@@ -33,10 +33,13 @@ test("ships shared responsive navigation and narrow-screen safeguards", async ()
   assert.match(responsiveJs, /event\.key === "Escape"/);
 });
 
-test("keeps the estimate button in the small-phone header", async () => {
+test("stacks the full-width estimate button below the mobile logo and menu", async () => {
   const responsiveCss = await readFile(path.join(projectRoot, "public", "responsive.css"), "utf8");
   const responsiveJs = await readFile(path.join(projectRoot, "public", "responsive.js"), "utf8");
-  assert.match(responsiveCss, /@media \(max-width: 480px\)[\s\S]*?grid-template-columns: minmax\(104px, 1fr\) auto 42px/);
+  assert.match(responsiveCss, /@media \(max-width: 980px\)[\s\S]*?grid-template-columns: minmax\(145px, 1fr\) 48px/);
+  assert.match(responsiveCss, /@media \(max-width: 980px\)[\s\S]*?\.header-cta \{[\s\S]*?width: 100%[\s\S]*?grid-column: 1 \/ -1[\s\S]*?grid-row: 2/);
+  assert.match(responsiveCss, /@media \(max-width: 980px\)[\s\S]*?\.mobile-menu-toggle \{[\s\S]*?grid-column: 2[\s\S]*?grid-row: 1/);
+  assert.match(responsiveCss, /@media \(max-width: 480px\)[\s\S]*?grid-template-columns: minmax\(104px, 1fr\) 42px/);
   assert.match(responsiveCss, /@media \(max-width: 480px\)[\s\S]*?\.header-cta \{[\s\S]*?display: inline-flex/);
   assert.doesNotMatch(responsiveCss, /@media \(max-width: 480px\)[\s\S]*?\.header-cta \{[^}]*display: none/);
   assert.match(responsiveJs, /--mobile-menu-top/);
