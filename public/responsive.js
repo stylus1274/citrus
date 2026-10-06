@@ -26,6 +26,10 @@
   window.addEventListener("scroll", updateStickyHeader, { passive: true });
 
   function setMenuOpen(open) {
+    if (open) {
+      const topbarBottom = topbar?.getBoundingClientRect().bottom ?? 0;
+      menu.style.setProperty("--mobile-menu-top", `${Math.max(0, Math.round(topbarBottom))}px`);
+    }
     menu.hidden = !open;
     toggle.setAttribute("aria-expanded", String(open));
     toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
