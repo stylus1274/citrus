@@ -353,6 +353,71 @@ body.citrus-menu-lock {
   }
 }
 
+@media (max-width: 720px) {
+  #citrus-demolition-services-redesign .site-header {
+    min-height: 76px;
+    grid-template-columns: minmax(118px, 1fr) auto 44px;
+    gap: 8px;
+    padding: 0 14px;
+  }
+
+  #citrus-demolition-services-redesign .brand {
+    display: flex;
+    align-items: center;
+  }
+
+  #citrus-demolition-services-redesign .brand img {
+    width: clamp(128px, 36vw, 150px);
+    max-height: 58px;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  #citrus-demolition-services-redesign .header-cta {
+    min-height: 44px;
+    padding: 12px 13px;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: .07em;
+  }
+
+  #citrus-demolition-services-redesign .header-cta span {
+    font-size: 13px;
+  }
+
+  #citrus-demolition-services-redesign .mobile-menu-toggle {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 390px) {
+  #citrus-demolition-services-redesign .site-header {
+    grid-template-columns: minmax(108px, 1fr) auto 42px;
+    gap: 6px;
+    padding: 0 10px;
+  }
+
+  #citrus-demolition-services-redesign .brand img {
+    width: clamp(112px, 34vw, 128px);
+  }
+
+  #citrus-demolition-services-redesign .header-cta {
+    min-height: 42px;
+    padding: 11px 10px;
+    font-size: 9px;
+  }
+
+  #citrus-demolition-services-redesign .header-cta span {
+    display: none;
+  }
+
+  #citrus-demolition-services-redesign .mobile-menu-toggle {
+    width: 42px;
+    height: 42px;
+  }
+}
+
 @media (max-width: 680px) {
   #citrus-demolition-services-redesign .section-pad {
     padding: 64px 20px;
