@@ -169,11 +169,197 @@ function pageDescription(html) {
   return `${description.slice(0, 155).replace(/\s+\S*$/, "")}...`;
 }
 
+function pageHeading(html, filename) {
+  const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+  return plainText(heading?.[1] || filename.replace(/\.html$/, "").replaceAll("-", " "));
+}
+
 function pageTitle(html, filename) {
   if (filename === "design.html") return "Citrus Demolition & Land Clearing | Central Florida";
-  const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
-  const title = plainText(heading?.[1] || filename.replace(/\.html$/, "").replaceAll("-", " "));
-  return `${title} | Citrus Demolition & Land Clearing`;
+  return `${pageHeading(html, filename)} | Citrus Demolition & Land Clearing`;
+}
+
+function absoluteUrl(value) {
+  if (!value) return undefined;
+  try {
+    return new URL(value, `${productionOrigin}/`).href;
+  } catch {
+    return undefined;
+  }
+}
+
+function pageImage(html) {
+  const heroRule = html.match(/\.hero-bg\s*\{[^}]*\}/i)?.[0] || "";
+  const heroImages = [...heroRule.matchAll(/url\(\s*(["']?)(.*?)\1\s*\)/gi)]
+    .map((match) => match[2])
+    .filter((value) => !value.startsWith("data:"));
+  if (heroImages.length) return absoluteUrl(heroImages.at(-1));
+
+  const contentImage = html.match(/<img\b[^>]*src=["']([^"']+)["'][^>]*>/i)?.[1];
+  return absoluteUrl(contentImage) || `${productionOrigin}/icon.png`;
+}
+
+function pageLogo(html) {
+  const brand = html.match(/<a\b[^>]*class=["'][^"']*\bbrand\b[^"']*["'][^>]*>[\s\S]*?<img\b[^>]*src=["']([^"']+)["']/i)?.[1];
+  return absoluteUrl(brand) || `${productionOrigin}/icon.png`;
+}
+
+function schemaDate(value) {
+  const match = value?.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s+(\d{4})/i);
+  if (!match) return undefined;
+  const months = [
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december",
+  ];
+  const month = String(months.indexOf(match[1].toLowerCase()) + 1).padStart(2, "0");
+  return `${match[3]}-${month}-${match[2].padStart(2, "0")}`;
+}
+
+function articleDates(html) {
+  const meta = plainText(html.match(/<div\b[^>]*class=["'][^"']*\barticle-meta\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i)?.[0] || "");
+  const published = schemaDate(meta.match(/Published\s+([A-Z][a-z]+\s+\d{1,2},\s+\d{4})/i)?.[1]);
+  const modified = schemaDate(meta.match(/Updated\s+([A-Z][a-z]+\s+\d{1,2},\s+\d{4})/i)?.[1]);
+  return {
+    datePublished: published || modified,
+    dateModified: modified || published,
+  };
+}
+
+function faqItems(html) {
+  const items = [];
+  for (const match of html.matchAll(/<details\b[^>]*class=["'][^"']*\bfaq-item\b[^"']*["'][^>]*>([\s\S]*?)<\/details>/gi)) {
+    const question = plainText(match[1].match(/<summary\b[^>]*>([\s\S]*?)<\/summary>/i)?.[1] || "");
+    const answer = plainText(match[1].match(/<p\b[^>]*>([\s\S]*?)<\/p>/i)?.[1] || "");
+    if (question && answer) items.push({ question, answer });
+  }
+  return items;
+}
+
+function structuredData(html, filename, isPost) {
+  const route = routeByFile[filename];
+  const canonicalUrl = `${productionOrigin}${withTrailingSlash(route)}`;
+  const heading = pageHeading(html, filename);
+  const title = pageTitle(html, filename);
+  const description = pageDescription(html);
+  const image = pageImage(html);
+  const graph = [
+    {
+      "@type": ["LocalBusiness", "GeneralContractor"],
+      "@id": `${productionOrigin}/#organization`,
+      name: "Citrus Demolition & Land Clearing",
+      url: `${productionOrigin}/`,
+      logo: {
+        "@type": "ImageObject",
+        url: pageLogo(html),
+      },
+      image,
+      telephone: "+1-352-464-5955",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "6459 W Seven Rivers Dr",
+        addressLocality: "Crystal River",
+        addressRegion: "FL",
+        postalCode: "34429",
+        addressCountry: "US",
+      },
+      areaServed: ["Citrus County", "Hernando County", "Levy County", "Marion County", "Lake County", "Pasco County"].map((name) => ({
+        "@type": "AdministrativeArea",
+        name,
+      })),
+      identifier: {
+        "@type": "PropertyValue",
+        name: "Florida contractor license",
+        value: "CBC1264327",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${productionOrigin}/#website`,
+      url: `${productionOrigin}/`,
+      name: "Citrus Demolition & Land Clearing",
+      publisher: { "@id": `${productionOrigin}/#organization` },
+      inLanguage: "en-US",
+    },
+  ];
+
+  const webpage = {
+    "@type": filename === "blog.html" ? "CollectionPage" : "WebPage",
+    "@id": `${canonicalUrl}#webpage`,
+    url: canonicalUrl,
+    name: title,
+    description,
+    isPartOf: { "@id": `${productionOrigin}/#website` },
+    about: { "@id": `${productionOrigin}/#organization` },
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      url: image,
+    },
+    inLanguage: "en-US",
+  };
+  graph.push(webpage);
+
+  if (route !== "/") {
+    const breadcrumbItems = [
+      { name: "Home", item: `${productionOrigin}/` },
+    ];
+    if (isPost || filename === "blog.html") {
+      breadcrumbItems.push({ name: "Blog", item: `${productionOrigin}/blog/` });
+    }
+    if (isPost) breadcrumbItems.push({ name: heading, item: canonicalUrl });
+    if (!isPost && filename !== "blog.html") breadcrumbItems.push({ name: heading, item: canonicalUrl });
+
+    graph.push({
+      "@type": "BreadcrumbList",
+      "@id": `${canonicalUrl}#breadcrumb`,
+      itemListElement: breadcrumbItems.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: item.name,
+        item: item.item,
+      })),
+    });
+    webpage.breadcrumb = { "@id": `${canonicalUrl}#breadcrumb` };
+  }
+
+  if (isPost) {
+    const dates = articleDates(html);
+    const article = {
+      "@type": "BlogPosting",
+      "@id": `${canonicalUrl}#article`,
+      url: canonicalUrl,
+      mainEntityOfPage: { "@id": `${canonicalUrl}#webpage` },
+      headline: heading,
+      description,
+      image: [image],
+      author: { "@id": `${productionOrigin}/#organization` },
+      publisher: { "@id": `${productionOrigin}/#organization` },
+      datePublished: dates.datePublished,
+      dateModified: dates.dateModified,
+      inLanguage: "en-US",
+    };
+    graph.push(article);
+    webpage.mainEntity = { "@id": `${canonicalUrl}#article` };
+  }
+
+  const faqs = faqItems(html);
+  if (faqs.length) {
+    graph.push({
+      "@type": "FAQPage",
+      "@id": `${canonicalUrl}#faq`,
+      url: canonicalUrl,
+      mainEntity: faqs.map(({ question, answer }) => ({
+        "@type": "Question",
+        name: question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: answer,
+        },
+      })),
+    });
+  }
+
+  const json = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replaceAll("<", "\\u003c");
+  return `<script type="application/ld+json">${json}</script>`;
 }
 
 function cleanInternalUrls(html) {
@@ -215,8 +401,9 @@ function reduceHeadingFontSizes(html) {
   });
 }
 
-function prepareDocument(html, filename) {
+function prepareDocument(html, filename, postRoutes) {
   const route = routeByFile[filename];
+  const isPost = postRoutes.has(withTrailingSlash(route));
   const canonicalUrl = `${productionOrigin}${withTrailingSlash(route)}`;
   const title = pageTitle(html, filename);
   const description = pageDescription(html);
@@ -225,6 +412,7 @@ function prepareDocument(html, filename) {
     .replace(/<meta\b[^>]*name=["']description["'][^>]*>\s*/gi, "")
     .replace(/<link\b[^>]*rel=["']canonical["'][^>]*>\s*/gi, "")
     .replace(/<meta\b[^>]*property=["']og:[^"']+["'][^>]*>\s*/gi, "")
+    .replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>\s*/gi, "")
     .replace(/<title>[\s\S]*?<\/title>/i, `<title>${title}</title>`);
   const metadata = [
     `<meta name="description" content="${description.replaceAll('"', "&quot;")}">`,
@@ -232,9 +420,9 @@ function prepareDocument(html, filename) {
     `<meta property="og:title" content="${title.replaceAll('"', "&quot;")}">`,
     `<meta property="og:description" content="${description.replaceAll('"', "&quot;")}">`,
     `<meta property="og:url" content="${canonicalUrl}">`,
-    '<meta property="og:type" content="website">',
+    `<meta property="og:type" content="${isPost ? "article" : "website"}">`,
   ].join("\n");
-  prepared = prepared.replace(/<\/head>/i, `${metadata}\n${responsiveAssets}\n</head>`);
+  prepared = prepared.replace(/<\/head>/i, `${metadata}\n${structuredData(prepared, filename, isPost)}\n${responsiveAssets}\n</head>`);
   prepared = prepared.replace(
     /(<header\b[\s\S]*?<\/header>)/i,
     `$1${cleanInternalUrls(mobileMenuMarkup)}`,
@@ -279,12 +467,6 @@ async function main() {
   if (files.join("\n") !== expectedFiles.join("\n")) {
     throw new Error("The public HTML page list changed. Update routeByFile before building so no page is omitted.");
   }
-  for (const filename of files) {
-    const wrapper = await readFile(path.join(sourceDirectory, filename), "utf8");
-    const outputName = filename === "design.html" ? "index.html" : filename;
-    const standaloneHtml = prepareDocument(extractInnerDocument(wrapper, filename), filename);
-    await writeFile(path.join(outputDirectory, outputName), await extractEmbeddedImages(standaloneHtml), "utf8");
-  }
   const blogHtml = cleanInternalUrls(extractInnerDocument(
     await readFile(path.join(sourceDirectory, "blog.html"), "utf8"),
     "blog.html",
@@ -293,6 +475,12 @@ async function main() {
     [...blogHtml.matchAll(/<article\b[^>]*class=["'][^"']*\barticle-card\b[^"']*["'][\s\S]*?<a\b[^>]*href=["'](\/[^"'#?]+)["']/gi)]
       .map((match) => withTrailingSlash(match[1])),
   );
+  for (const filename of files) {
+    const wrapper = await readFile(path.join(sourceDirectory, filename), "utf8");
+    const outputName = filename === "design.html" ? "index.html" : filename;
+    const standaloneHtml = prepareDocument(extractInnerDocument(wrapper, filename), filename, postRoutes);
+    await writeFile(path.join(outputDirectory, outputName), await extractEmbeddedImages(standaloneHtml), "utf8");
+  }
   const allRoutes = [...new Set(Object.values(routeByFile).map(withTrailingSlash))].sort();
   const pageRoutes = allRoutes.filter((route) => !postRoutes.has(route));
   if (postRoutes.size + pageRoutes.length !== allRoutes.length) {
