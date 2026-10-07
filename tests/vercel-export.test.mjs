@@ -2,9 +2,28 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import nextConfig from "../next.config.ts";
 
 const projectRoot = process.cwd();
 const outputDirectory = path.join(projectRoot, "public", "_site");
+
+test("redirects direct generated-page URLs to their public canonicals", async () => {
+  const redirects = await nextConfig.redirects();
+  const genericRedirect = redirects.find((item) => item.source === "/_site/:slug.html");
+  assert.ok(genericRedirect);
+
+  const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
+  for (const filename of files) {
+    const html = await readFile(path.join(outputDirectory, filename), "utf8");
+    const canonical = html.match(/<link rel="canonical" href="([^"]+)"/i)?.[1];
+    assert.ok(canonical, filename);
+    const source = `/_site/${filename}`;
+    const redirect = redirects.find((item) => item.source === source) ?? genericRedirect;
+    const destination = redirect.destination.replace(":slug", filename.slice(0, -5));
+    assert.equal(destination, new URL(canonical).pathname, filename);
+    assert.equal(redirect.permanent, true, filename);
+  }
+});
 
 test("exports every site page as standalone, crawlable HTML", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));

@@ -6,6 +6,17 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   async redirects() {
     return [
+      // The generated HTML is an internal rewrite target, not a public page URL.
+      // Redirect direct requests before Next.js serves files from public/_site.
+      { source: "/_site/index.html", destination: "/", permanent: true },
+      { source: "/_site/hernando-residential-demolition.html", destination: "/hernando/residential-demolition/", permanent: true },
+      { source: "/_site/inverness-commercial-demolition.html", destination: "/inverness/commercial-demolition/", permanent: true },
+      { source: "/_site/inverness-demolition.html", destination: "/inverness/demolition/", permanent: true },
+      { source: "/_site/inverness-land-clearing.html", destination: "/inverness/land-clearing/", permanent: true },
+      { source: "/_site/inverness-residential-demolition.html", destination: "/inverness/residential-demolition/", permanent: true },
+      { source: "/_site/inverness-site-preparation.html", destination: "/inverness/site-prep/", permanent: true },
+      { source: "/_site/spring-hill-land-clearing.html", destination: "/spring-hill/land-clearing/", permanent: true },
+      { source: "/_site/:slug.html", destination: "/:slug/", permanent: true },
       { source: "/design.html", destination: "/", permanent: true },
       { source: withTrailingSlash("/hernando-residential-demolition"), destination: withTrailingSlash("/hernando/residential-demolition"), permanent: true },
       { source: withTrailingSlash("/inverness-commercial-demolition"), destination: withTrailingSlash("/inverness/commercial-demolition"), permanent: true },
