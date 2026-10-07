@@ -138,6 +138,58 @@ test("generates search-engine discovery files", async () => {
   assert.ok(sitemapUrls.every((url) => new URL(url).pathname === "/" || new URL(url).pathname.endsWith("/")));
 });
 
+test("generates complete structured data for every blog post", async () => {
+  const postSitemap = await readFile(path.join(projectRoot, "public", "post-sitemap.xml"), "utf8");
+  const postUrls = [...postSitemap.matchAll(/<loc>(https:\/\/[^<]+)<\/loc>/g)].map((match) => match[1]);
+  assert.equal(postUrls.length, 35);
+
+  for (const url of postUrls) {
+    const slug = new URL(url).pathname.split("/").filter(Boolean).join("/");
+    const html = await readFile(path.join(outputDirectory, `${slug}.html`), "utf8");
+    const jsonLdBlocks = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)];
+    assert.equal(jsonLdBlocks.length, 1, slug);
+    const schema = JSON.parse(jsonLdBlocks[0][1]);
+    const graph = schema["@graph"];
+    const types = graph.flatMap((item) => Array.isArray(item["@type"]) ? item["@type"] : [item["@type"]]);
+    assert.ok(types.includes("LocalBusiness"), slug);
+    assert.ok(types.includes("GeneralContractor"), slug);
+    assert.ok(types.includes("WebSite"), slug);
+    assert.ok(types.includes("BreadcrumbList"), slug);
+    assert.ok(types.includes("BlogPosting"), slug);
+    assert.ok(types.includes("FAQPage"), slug);
+
+    const article = graph.find((item) => item["@type"] === "BlogPosting");
+    assert.ok(article.headline, slug);
+    assert.match(article.url, /^https:\/\/www\.citrusdemolitionandlandclearing\.com\/.+\/$/, slug);
+    assert.match(article.image[0], /^https:\/\//, slug);
+    assert.equal(article.author["@id"], "https://www.citrusdemolitionandlandclearing.com/#organization", slug);
+    assert.match(article.datePublished, /^\d{4}-\d{2}-\d{2}$/, slug);
+    assert.match(article.dateModified, /^\d{4}-\d{2}-\d{2}$/, slug);
+    assert.match(html, /<meta property="og:type" content="article">/, slug);
+
+    const breadcrumb = graph.find((item) => item["@type"] === "BreadcrumbList");
+    assert.equal(breadcrumb.itemListElement.length, 3, slug);
+    assert.equal(breadcrumb.itemListElement[1].name, "Blog", slug);
+    assert.equal(breadcrumb.itemListElement[2].item, url, slug);
+
+    const faq = graph.find((item) => item["@type"] === "FAQPage");
+    assert.ok(faq.mainEntity.length > 0, slug);
+    assert.ok(faq.mainEntity.every((item) => item.name && item.acceptedAnswer?.text), slug);
+  }
+});
+
+test("describes the blog index as a collection", async () => {
+  const html = await readFile(path.join(outputDirectory, "blog.html"), "utf8");
+  const json = html.match(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/i)?.[1];
+  assert.ok(json);
+  const schema = JSON.parse(json);
+  const types = schema["@graph"].flatMap((item) => Array.isArray(item["@type"]) ? item["@type"] : [item["@type"]]);
+  assert.ok(types.includes("CollectionPage"));
+  assert.ok(types.includes("BreadcrumbList"));
+  assert.ok(!types.includes("BlogPosting"));
+  assert.match(html, /<meta property="og:type" content="website">/);
+});
+
 test("uses trailing slashes in canonical URLs and internal navigation", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
   const publicPaths = new Set(
