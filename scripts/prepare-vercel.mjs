@@ -4,6 +4,7 @@ import path from "node:path";
 
 const projectRoot = process.cwd();
 const sourceDirectory = path.join(projectRoot, "site-source");
+const titleByRoute = JSON.parse(await readFile(path.join(sourceDirectory, "page-titles.json"), "utf8"));
 const sourceAssetsDirectory = path.join(projectRoot, "site-assets");
 const publicDirectory = path.join(projectRoot, "public");
 const outputDirectory = path.join(publicDirectory, "_site");
@@ -191,6 +192,8 @@ function pageHeading(html, filename) {
 }
 
 function pageTitle(html, filename) {
+  const approvedTitle = titleByRoute[withTrailingSlash(routeByFile[filename])];
+  if (approvedTitle) return approvedTitle;
   if (filename === "design.html") return "Citrus Demolition & Land Clearing | Central Florida";
   return `${pageHeading(html, filename)} | Citrus Demolition & Land Clearing`;
 }
