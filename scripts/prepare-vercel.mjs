@@ -15,6 +15,22 @@ const productionOrigin = (
 
 const withTrailingSlash = (route) => route === "/" ? "/" : `${route.replace(/\/+$/, "")}/`;
 
+
+const googleTag = "<!-- Google tag (gtag.js) -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-4WQ5Z1CLMZ\"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-4WQ5Z1CLMZ');\n</script>";
+
+function installGoogleTag(html) {
+  // Normalize an existing installation before placing one copy first in the head.
+  const cleaned = html
+    .replace(/<!--\s*Google tag \(gtag\.js\)\s*-->\s*/gi, "")
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>\s*/gi, (script) =>
+      script.includes("G-4WQ5Z1CLMZ") ? "" : script,
+    );
+  if (!/<head\b[^>]*>/i.test(cleaned)) {
+    throw new Error("Cannot install Google tag: page has no head element.");
+  }
+  return cleaned.replace(/(<head\b[^>]*>)\s*/i, (_, head) => `${head}\n${googleTag}\n`);
+}
+
 const responsiveAssets = [
   '<link rel="stylesheet" href="/responsive.css">',
   '<script src="/responsive.js" defer></script>',
@@ -407,7 +423,7 @@ function prepareDocument(html, filename, postRoutes) {
   const canonicalUrl = `${productionOrigin}${withTrailingSlash(route)}`;
   const title = pageTitle(html, filename);
   const description = pageDescription(html);
-  let prepared = reduceHeadingFontSizes(cleanInternalUrls(html))
+  let prepared = installGoogleTag(reduceHeadingFontSizes(cleanInternalUrls(html)))
     .replace(/<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>\s*/gi, "")
     .replace(/<meta\b[^>]*name=["']description["'][^>]*>\s*/gi, "")
     .replace(/<link\b[^>]*rel=["']canonical["'][^>]*>\s*/gi, "")
