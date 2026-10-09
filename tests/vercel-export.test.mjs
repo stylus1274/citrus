@@ -7,6 +7,30 @@ import nextConfig from "../next.config.ts";
 const projectRoot = process.cwd();
 const outputDirectory = path.join(projectRoot, "public", "_site");
 
+test("exports all approved titles consistently in search, social, and page schema", async () => {
+  const titles = JSON.parse(await readFile(path.join(projectRoot, "site-source", "page-titles.json"), "utf8"));
+  const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
+  const seen = new Set();
+  const decode = (value) => value.replace(/&amp;/g, "&").replace(/&quot;/g, '"');
+  for (const filename of files) {
+    const html = await readFile(path.join(outputDirectory, filename), "utf8");
+    const route = new URL(html.match(/<link rel="canonical" href="([^"]+)"/i)[1]).pathname;
+    const expected = titles[route];
+    assert.ok(expected, route);
+    assert.equal([...html.matchAll(/<title>([\s\S]*?)<\/title>/gi)].length, 1, route);
+    assert.equal(decode(html.match(/<title>([\s\S]*?)<\/title>/i)[1]), expected, route);
+    assert.equal(decode(html.match(/<meta property="og:title" content="([^"]+)"/i)[1]), expected, route);
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/i)[1]);
+    const page = schema["@graph"].find((item) => ["WebPage", "CollectionPage"].includes(item["@type"]));
+    assert.equal(page.name, expected, route);
+    seen.add(route);
+  }
+  assert.equal(seen.size, 62);
+  assert.deepEqual([...seen].sort(), Object.keys(titles).sort());
+  assert.equal(new Set(Object.values(titles)).size, 62);
+  assert.equal(titles["/"], "Citrus Demolition & Land Clearing | Central Florida");
+});
+
 test("redirects direct generated-page URLs to their public canonicals", async () => {
   const redirects = await nextConfig.redirects();
   const genericRedirect = redirects.find((item) => item.source === "/_site/:slug.html");
