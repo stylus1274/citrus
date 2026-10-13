@@ -7,6 +7,38 @@ import nextConfig from "../next.config.ts";
 const projectRoot = process.cwd();
 const outputDirectory = path.join(projectRoot, "public", "_site");
 
+test("keeps the desktop Services menu focused on ten non-location services", async () => {
+  const expected = [
+    "/residential-demolition/", "/commercial-demolition/", "/mobile-home-demolition/",
+    "/selective-demolition/", "/emergency-demolition/", "/concrete-foundation-removal/",
+    "/land-clearing/", "/site-preparation/", "/pool-removal/", "/debris-removal-hauling/",
+  ];
+  const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
+  for (const filename of files) {
+    const html = await readFile(path.join(outputDirectory, filename), "utf8");
+    const menu = html.match(/<div class="services-dropdown(?: active)?">([\s\S]*?)<div class="services-dropdown areas-dropdown(?: active)?">/)?.[1];
+    assert.ok(menu, filename);
+    const columns = menu.match(/<div class="services-columns">([\s\S]*?)<a class="services-estimate"/)?.[1];
+    assert.ok(columns, filename);
+    const links = [...columns.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map((match) => match[1]);
+    assert.deepEqual([...links].sort(), [...expected].sort(), filename);
+  }
+});
+
+test("keeps city service pages linked outside the pruned Services menu", async () => {
+  const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
+  const linked = new Set();
+  for (const filename of files) {
+    const html = await readFile(path.join(outputDirectory, filename), "utf8");
+    for (const match of html.matchAll(/<a\b[^>]*href="([^"]+)"/g)) linked.add(match[1]);
+  }
+  for (const route of [
+    "/inverness/demolition/", "/inverness/residential-demolition/",
+    "/hernando/residential-demolition/", "/inverness/commercial-demolition/",
+    "/spring-hill/land-clearing/", "/inverness/land-clearing/", "/inverness/site-prep/",
+  ]) assert.ok(linked.has(route), route);
+});
+
 test("exports all approved titles consistently in search, social, and page schema", async () => {
   const titles = JSON.parse(await readFile(path.join(projectRoot, "site-source", "page-titles.json"), "utf8"));
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
