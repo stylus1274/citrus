@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
       { source: "/demolition/", destination: "/demolition-services/", statusCode: 301 },
       { source: "/brooksville/demolition/", destination: "/brooksville/", statusCode: 301 },
       { source: "/citrus-county/land-clearing/", destination: "/land-clearing/", statusCode: 301 },
+      { source: "/hernando/site-prep/", destination: "/site-preparation/", statusCode: 301 },
       { source: "/_site/hernando-land-clearing.html", destination: "/hernando/land-clearing/", permanent: true },
       { source: "/_site/hernando-residential-demolition.html", destination: "/hernando/residential-demolition/", permanent: true },
       { source: "/_site/inverness-commercial-demolition.html", destination: "/inverness/commercial-demolition/", permanent: true },

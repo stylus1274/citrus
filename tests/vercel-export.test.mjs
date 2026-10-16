@@ -112,6 +112,14 @@ test("redirects the retired Citrus County land clearing URL", async () => {
   );
 });
 
+test("redirects the retired Hernando site prep URL", async () => {
+  const redirects = await nextConfig.redirects();
+  assert.deepEqual(
+    redirects.find((item) => item.source === "/hernando/site-prep/"),
+    { source: "/hernando/site-prep/", destination: "/site-preparation/", statusCode: 301 },
+  );
+});
+
 test("redirects direct generated-page URLs to their public canonicals", async () => {
   const redirects = await nextConfig.redirects();
   const genericRedirect = redirects.find((item) => item.source === "/_site/:slug.html");
