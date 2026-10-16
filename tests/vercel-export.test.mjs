@@ -7,9 +7,9 @@ import nextConfig from "../next.config.ts";
 const projectRoot = process.cwd();
 const outputDirectory = path.join(projectRoot, "public", "_site");
 
-test("keeps the desktop Services menu focused on ten non-location services", async () => {
+test("links the overview and ten non-location services in the desktop menu", async () => {
   const expected = [
-    "/residential-demolition/", "/commercial-demolition/", "/mobile-home-demolition/",
+    "/demolition-services/", "/residential-demolition/", "/commercial-demolition/", "/mobile-home-demolition/",
     "/selective-demolition/", "/emergency-demolition/", "/concrete-foundation-removal/",
     "/land-clearing/", "/site-preparation/", "/pool-removal/", "/debris-removal-hauling/",
   ];
@@ -57,10 +57,23 @@ test("exports all approved titles consistently in search, social, and page schem
     assert.equal(page.name, expected, route);
     seen.add(route);
   }
-  assert.equal(seen.size, 62);
+  assert.equal(seen.size, 63);
   assert.deepEqual([...seen].sort(), Object.keys(titles).sort());
-  assert.equal(new Set(Object.values(titles)).size, 62);
+  assert.equal(new Set(Object.values(titles)).size, 63);
   assert.equal(titles["/"], "Citrus Demolition & Land Clearing | Central Florida");
+});
+
+test("publishes the demolition overview with the service links and structured data", async () => {
+  const html = await readFile(path.join(outputDirectory, "demolition-services.html"), "utf8");
+  assert.match(html, /<h1>Demolition Services\./);
+  assert.match(html, /rel="canonical" href="https:\/\/www\.citrusdemolitionandlandclearing\.com\/demolition-services\/"/);
+  for (const route of ["/residential-demolition/", "/commercial-demolition/", "/mobile-home-demolition/", "/selective-demolition/", "/emergency-demolition/", "/concrete-foundation-removal/", "/pool-removal/"]) {
+    assert.ok(html.includes(`href="${route}"`), route);
+  }
+  const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/i)[1]);
+  assert.ok(schema["@graph"].some((item) => item["@type"] === "Service" && item.url === "https://www.citrusdemolitionandlandclearing.com/demolition-services/"));
+  const sitemap = await readFile(path.join(projectRoot, "public", "page-sitemap.xml"), "utf8");
+  assert.match(sitemap, /demolition-services\/<\/loc>/);
 });
 
 test("redirects direct generated-page URLs to their public canonicals", async () => {
@@ -83,7 +96,7 @@ test("redirects direct generated-page URLs to their public canonicals", async ()
 
 test("exports every site page as standalone, crawlable HTML", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
-  assert.equal(files.length, 62);
+  assert.equal(files.length, 63);
   for (const filename of files) {
     const html = await readFile(path.join(outputDirectory, filename), "utf8");
     assert.match(html, /<!doctype html>/i, filename);

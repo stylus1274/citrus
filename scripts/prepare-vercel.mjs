@@ -45,7 +45,7 @@ const mobileMenuMarkup = `
     <details>
       <summary>Demolition Services</summary>
       <div class="mobile-menu-links">
-        <a href="/">All Demolition Services</a>
+        <a href="/demolition-services">All Demolition Services</a>
         <a href="/residential-demolition">Residential Demolition</a>
         <a href="/commercial-demolition">Commercial Demolition</a>
         <a href="/selective-demolition">Selective Demolition</a>
@@ -85,6 +85,7 @@ export const routeByFile = {
   "crystal-river-debris-removal-after-demolition.html": "/crystal-river-debris-removal-after-demolition",
   "emergency-demolition-crystal-river.html": "/emergency-demolition-crystal-river",
   "design.html": "/",
+  "demolition-services.html": "/demolition-services",
   "blog.html": "/blog",
   "brooksville.html": "/brooksville",
   "commercial-demolition.html": "/commercial-demolition",
@@ -340,6 +341,19 @@ function structuredData(html, filename, isPost) {
     webpage.breadcrumb = { "@id": `${canonicalUrl}#breadcrumb` };
   }
 
+  if (filename === "demolition-services.html") {
+    graph.push({
+      "@type": "Service",
+      "@id": `${canonicalUrl}#service`,
+      name: "Demolition Services",
+      serviceType: "Demolition",
+      url: canonicalUrl,
+      provider: { "@id": `${productionOrigin}/#organization` },
+      areaServed: ["Citrus County", "Hernando County", "Levy County", "Marion County", "Lake County", "Pasco County"].map((name) => ({ "@type": "AdministrativeArea", name })),
+    });
+    webpage.mainEntity = { "@id": `${canonicalUrl}#service` };
+  }
+
   if (isPost) {
     const dates = articleDates(html);
     const article = {
@@ -421,6 +435,11 @@ function reduceHeadingFontSizes(html) {
 }
 
 function prepareDocument(html, filename, postRoutes) {
+  // Keep the desktop group heading a compact link to the full service overview.
+  html = html.replace(
+    '<div class="services-group"><p>Demolition</p>',
+    '<div class="services-group"><p><a href="/demolition-services" target="_top" style="color:inherit;text-decoration:none">Demolition Services ↗</a></p>',
+  );
   const route = routeByFile[filename];
   const isPost = postRoutes.has(withTrailingSlash(route));
   const canonicalUrl = `${productionOrigin}${withTrailingSlash(route)}`;
