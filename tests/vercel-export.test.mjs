@@ -96,6 +96,14 @@ test("publishes Hernando County land clearing and redirects the retired demoliti
   assert.ok(hub.includes('href="/hernando/land-clearing/"'));
 });
 
+test("redirects the retired Brooksville demolition URL to the city hub", async () => {
+  const redirects = await nextConfig.redirects();
+  assert.deepEqual(
+    redirects.find((item) => item.source === "/brooksville/demolition/"),
+    { source: "/brooksville/demolition/", destination: "/brooksville/", statusCode: 301 },
+  );
+});
+
 test("redirects direct generated-page URLs to their public canonicals", async () => {
   const redirects = await nextConfig.redirects();
   const genericRedirect = redirects.find((item) => item.source === "/_site/:slug.html");
