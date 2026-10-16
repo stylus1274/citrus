@@ -34,7 +34,7 @@ test("keeps city service pages linked outside the pruned Services menu", async (
   }
   for (const route of [
     "/inverness/demolition/", "/inverness/residential-demolition/",
-    "/hernando/residential-demolition/", "/inverness/commercial-demolition/",
+    "/hernando/residential-demolition/", "/hernando/land-clearing/", "/inverness/commercial-demolition/",
     "/spring-hill/land-clearing/", "/inverness/land-clearing/", "/inverness/site-prep/",
   ]) assert.ok(linked.has(route), route);
 });
@@ -57,9 +57,9 @@ test("exports all approved titles consistently in search, social, and page schem
     assert.equal(page.name, expected, route);
     seen.add(route);
   }
-  assert.equal(seen.size, 63);
+  assert.equal(seen.size, 64);
   assert.deepEqual([...seen].sort(), Object.keys(titles).sort());
-  assert.equal(new Set(Object.values(titles)).size, 63);
+  assert.equal(new Set(Object.values(titles)).size, 64);
   assert.equal(titles["/"], "Citrus Demolition & Land Clearing | Central Florida");
 });
 
@@ -74,6 +74,26 @@ test("publishes the demolition overview with the service links and structured da
   assert.ok(schema["@graph"].some((item) => item["@type"] === "Service" && item.url === "https://www.citrusdemolitionandlandclearing.com/demolition-services/"));
   const sitemap = await readFile(path.join(projectRoot, "public", "page-sitemap.xml"), "utf8");
   assert.match(sitemap, /demolition-services\/<\/loc>/);
+});
+
+test("publishes Hernando County land clearing and redirects the retired demolition URL", async () => {
+  const redirects = await nextConfig.redirects();
+  assert.deepEqual(
+    redirects.find((item) => item.source === "/demolition/"),
+    { source: "/demolition/", destination: "/demolition-services/", statusCode: 301 },
+  );
+  const html = await readFile(path.join(outputDirectory, "hernando-land-clearing.html"), "utf8");
+  assert.match(html, /<h1>Hernando County/);
+  assert.match(html, /rel="canonical" href="https:\/\/www\.citrusdemolitionandlandclearing\.com\/hernando\/land-clearing\/"/);
+  for (const route of ["/hernando/", "/spring-hill/land-clearing/", "/land-clearing/", "/site-preparation/"]) {
+    assert.ok(html.includes(`href="${route}"`), route);
+  }
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/i)[1]);
+  assert.ok(schema["@graph"].some((item) => item["@type"] === "Service" && item.url === "https://www.citrusdemolitionandlandclearing.com/hernando/land-clearing/"));
+  const sitemap = await readFile(path.join(projectRoot, "public", "page-sitemap.xml"), "utf8");
+  assert.match(sitemap, /hernando\/land-clearing\/<\/loc>/);
+  const hub = await readFile(path.join(outputDirectory, "hernando.html"), "utf8");
+  assert.ok(hub.includes('href="/hernando/land-clearing/"'));
 });
 
 test("redirects direct generated-page URLs to their public canonicals", async () => {
@@ -96,7 +116,7 @@ test("redirects direct generated-page URLs to their public canonicals", async ()
 
 test("exports every site page as standalone, crawlable HTML", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
-  assert.equal(files.length, 63);
+  assert.equal(files.length, 64);
   for (const filename of files) {
     const html = await readFile(path.join(outputDirectory, filename), "utf8");
     assert.match(html, /<!doctype html>/i, filename);

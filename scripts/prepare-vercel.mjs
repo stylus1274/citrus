@@ -108,6 +108,7 @@ export const routeByFile = {
   "house-demolition-cost-citrus-county-guide.html": "/house-demolition-cost-citrus-county-guide",
   "top-signs-property-needs-emergency-demolition-florida.html": "/top-signs-property-needs-emergency-demolition-florida",
   "storm-damage-repair-vs-demolition-west-central-florida.html": "/storm-damage-repair-vs-demolition-west-central-florida",
+  "hernando-land-clearing.html": "/hernando/land-clearing",
   "hernando-residential-demolition.html": "/hernando/residential-demolition",
   "hernando.html": "/hernando",
   "house-demolition-cost.html": "/house-demolition-cost",
@@ -339,6 +340,19 @@ function structuredData(html, filename, isPost) {
       })),
     });
     webpage.breadcrumb = { "@id": `${canonicalUrl}#breadcrumb` };
+  }
+
+  if (filename === "hernando-land-clearing.html") {
+    graph.push({
+      "@type": "Service",
+      "@id": `${canonicalUrl}#service`,
+      name: "Land Clearing in Hernando County",
+      serviceType: "Land Clearing",
+      url: canonicalUrl,
+      provider: { "@id": `${productionOrigin}/#organization` },
+      areaServed: { "@type": "AdministrativeArea", name: "Hernando County, Florida" },
+    });
+    webpage.mainEntity = { "@id": `${canonicalUrl}#service` };
   }
 
   if (filename === "demolition-services.html") {
