@@ -104,6 +104,14 @@ test("redirects the retired Brooksville demolition URL to the city hub", async (
   );
 });
 
+test("redirects the retired Citrus County land clearing URL", async () => {
+  const redirects = await nextConfig.redirects();
+  assert.deepEqual(
+    redirects.find((item) => item.source === "/citrus-county/land-clearing/"),
+    { source: "/citrus-county/land-clearing/", destination: "/land-clearing/", statusCode: 301 },
+  );
+});
+
 test("redirects direct generated-page URLs to their public canonicals", async () => {
   const redirects = await nextConfig.redirects();
   const genericRedirect = redirects.find((item) => item.source === "/_site/:slug.html");
