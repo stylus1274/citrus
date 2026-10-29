@@ -179,7 +179,8 @@ function extractInnerDocument(wrapper, filename) {
   return match ? decodeHtmlAttribute(match[1]) : wrapper;
 }
 
-function pageDescription(html) {
+function pageDescription(html, filename) {
+  if (filename === "design.html") return "Demolition, land clearing and site preparation in Citrus and Hernando Counties, FL. Removal, hauling and grading by one local crew. Get an estimate.";
   const heroCopy = html.match(/<p\b[^>]*class=["'][^"']*\bhero-copy\b[^"']*["'][^>]*>([\s\S]*?)<\/p>/i);
   const firstParagraph = html.match(/<p\b[^>]*>([\s\S]*?)<\/p>/i);
   const fallback = "Licensed demolition, land clearing, site preparation, and debris removal services across Central Florida.";
@@ -196,7 +197,7 @@ function pageHeading(html, filename) {
 function pageTitle(html, filename) {
   const approvedTitle = titleByRoute[withTrailingSlash(routeByFile[filename])];
   if (approvedTitle) return approvedTitle;
-  if (filename === "design.html") return "Citrus Demolition & Land Clearing | Central Florida";
+  if (filename === "design.html") return "Demolition & Land Clearing | Citrus & Hernando Counties, FL";
   return `${pageHeading(html, filename)} | Citrus Demolition & Land Clearing`;
 }
 
@@ -261,7 +262,7 @@ function structuredData(html, filename, isPost) {
   const canonicalUrl = `${productionOrigin}${withTrailingSlash(route)}`;
   const heading = pageHeading(html, filename);
   const title = pageTitle(html, filename);
-  const description = pageDescription(html);
+  const description = pageDescription(html, filename);
   const image = pageImage(html);
   const graph = [
     {
@@ -458,7 +459,7 @@ function prepareDocument(html, filename, postRoutes) {
   const isPost = postRoutes.has(withTrailingSlash(route));
   const canonicalUrl = `${productionOrigin}${withTrailingSlash(route)}`;
   const title = pageTitle(html, filename);
-  const description = pageDescription(html);
+  const description = pageDescription(html, filename);
   let prepared = installGoogleTag(reduceHeadingFontSizes(cleanInternalUrls(html)))
     .replace(/<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>\s*/gi, "")
     .replace(/<meta\b[^>]*name=["']description["'][^>]*>\s*/gi, "")

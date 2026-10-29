@@ -60,7 +60,7 @@ test("exports all approved titles consistently in search, social, and page schem
   assert.equal(seen.size, 64);
   assert.deepEqual([...seen].sort(), Object.keys(titles).sort());
   assert.equal(new Set(Object.values(titles)).size, 64);
-  assert.equal(titles["/"], "Citrus Demolition & Land Clearing | Central Florida");
+  assert.equal(titles["/"], "Demolition & Land Clearing | Citrus & Hernando Counties, FL");
 });
 
 test("publishes the demolition overview with the service links and structured data", async () => {
