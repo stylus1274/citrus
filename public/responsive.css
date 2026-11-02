@@ -650,3 +650,65 @@ body.citrus-menu-lock {
   cursor: wait;
   opacity: 0.72;
 }
+
+/* Give estimate and availability calls to action the same weight on every page. */
+#citrus-demolition-services-redesign .scope-box .button,
+#citrus-demolition-services-redesign .project-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  max-width: 100%;
+  min-height: 50px;
+  padding: 16px 20px;
+  border: 0;
+  background: var(--orange);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+#citrus-demolition-services-redesign .scope-box .button span,
+#citrus-demolition-services-redesign .project-cta span {
+  color: var(--white);
+}
+
+#citrus-demolition-services-redesign .scope-box .button:hover,
+#citrus-demolition-services-redesign .project-cta:hover {
+  background: var(--orange-dark);
+}
+
+#citrus-demolition-services-redesign .service-area-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  max-width: 100%;
+  min-height: 50px;
+  padding: 16px 22px;
+  border: 0;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+#citrus-demolition-services-redesign .service-area-action:hover {
+  background: var(--white);
+  color: var(--ink);
+}
+
+#citrus-demolition-services-redesign .scope-box .button:focus-visible,
+#citrus-demolition-services-redesign .project-cta:focus-visible,
+#citrus-demolition-services-redesign .service-area-action:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+}
+
+#citrus-demolition-services-redesign .scope-box .button:focus-visible {
+  outline-color: var(--ink);
+}
