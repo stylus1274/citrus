@@ -76,6 +76,19 @@ test("publishes the demolition overview with the service links and structured da
   assert.match(sitemap, /demolition-services\/<\/loc>/);
 });
 
+test("describes both homepage service lines in the business offer catalog", async () => {
+  const html = await readFile(path.join(outputDirectory, "index.html"), "utf8");
+  const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/i)[1]);
+  const business = schema["@graph"].find((item) => item["@id"] === "https://www.citrusdemolitionandlandclearing.com/#organization");
+  assert.ok(business);
+  const offers = business.hasOfferCatalog.itemListElement.map((offer) => offer.itemOffered);
+  assert.deepEqual(offers.map(({ name, serviceType, url }) => ({ name, serviceType, url })), [
+    { name: "Demolition Services", serviceType: "Demolition", url: "https://www.citrusdemolitionandlandclearing.com/demolition-services/" },
+    { name: "Land Clearing", serviceType: "Land Clearing", url: "https://www.citrusdemolitionandlandclearing.com/land-clearing/" },
+  ]);
+  for (const service of offers) assert.equal(service.provider["@id"], business["@id"]);
+});
+
 test("publishes Hernando County land clearing and redirects the retired demolition URL", async () => {
   const redirects = await nextConfig.redirects();
   assert.deepEqual(
