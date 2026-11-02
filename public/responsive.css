@@ -652,8 +652,8 @@ body.citrus-menu-lock {
 }
 
 /* Give estimate and availability calls to action the same weight on every page. */
-#citrus-demolition-services-redesign .scope-box .button,
-#citrus-demolition-services-redesign .project-cta {
+#citrus-demolition-services-redesign .intro .scope-box .button,
+#citrus-demolition-services-redesign .featured .project-cta {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -670,17 +670,17 @@ body.citrus-menu-lock {
   text-decoration: none;
 }
 
-#citrus-demolition-services-redesign .scope-box .button span,
-#citrus-demolition-services-redesign .project-cta span {
+#citrus-demolition-services-redesign .intro .scope-box .button span,
+#citrus-demolition-services-redesign .featured .project-cta span {
   color: var(--white);
 }
 
-#citrus-demolition-services-redesign .scope-box .button:hover,
-#citrus-demolition-services-redesign .project-cta:hover {
+#citrus-demolition-services-redesign .intro .scope-box .button:hover,
+#citrus-demolition-services-redesign .featured .project-cta:hover {
   background: var(--orange-dark);
 }
 
-#citrus-demolition-services-redesign .service-area-action {
+#citrus-demolition-services-redesign .service-area .service-area-action {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -697,18 +697,18 @@ body.citrus-menu-lock {
   text-decoration: none;
 }
 
-#citrus-demolition-services-redesign .service-area-action:hover {
+#citrus-demolition-services-redesign .service-area .service-area-action:hover {
   background: var(--white);
   color: var(--ink);
 }
 
-#citrus-demolition-services-redesign .scope-box .button:focus-visible,
-#citrus-demolition-services-redesign .project-cta:focus-visible,
-#citrus-demolition-services-redesign .service-area-action:focus-visible {
+#citrus-demolition-services-redesign .intro .scope-box .button:focus-visible,
+#citrus-demolition-services-redesign .featured .project-cta:focus-visible,
+#citrus-demolition-services-redesign .service-area .service-area-action:focus-visible {
   outline: 3px solid var(--white);
   outline-offset: 3px;
 }
 
-#citrus-demolition-services-redesign .scope-box .button:focus-visible {
+#citrus-demolition-services-redesign .intro .scope-box .button:focus-visible {
   outline-color: var(--ink);
 }
