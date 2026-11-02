@@ -288,6 +288,34 @@ function structuredData(html, filename, isPost) {
         "@type": "AdministrativeArea",
         name,
       })),
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Demolition and land clearing services",
+        itemListElement: [
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              "@id": `${productionOrigin}/demolition-services/#service`,
+              name: "Demolition Services",
+              serviceType: "Demolition",
+              url: `${productionOrigin}/demolition-services/`,
+              provider: { "@id": `${productionOrigin}/#organization` },
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              "@id": `${productionOrigin}/land-clearing/#service`,
+              name: "Land Clearing",
+              serviceType: "Land Clearing",
+              url: `${productionOrigin}/land-clearing/`,
+              provider: { "@id": `${productionOrigin}/#organization` },
+            },
+          },
+        ],
+      },
       identifier: {
         "@type": "PropertyValue",
         name: "Florida contractor license",
