@@ -416,12 +416,17 @@ test("uses trailing slashes in canonical URLs and internal navigation", async ()
   }
 });
 
-test("installs exactly one Google tag immediately after head on every page", async () => {
+test("installs both approved GTM containers and tracking tags on every generated page", async () => {
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
   for (const filename of files) {
     const html = await readFile(path.join(outputDirectory, filename), "utf8");
     assert.match(html, /<head\b[^>]*>\s*<!-- Google tag \(gtag\.js\) -->\s*<script async src="https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-4WQ5Z1CLMZ"><\/script>/i, filename);
     assert.equal((html.match(/googletagmanager\.com\/gtag\/js\?id=G-4WQ5Z1CLMZ/g) || []).length, 1, filename);
     assert.equal((html.match(/gtag\('config', 'G-4WQ5Z1CLMZ'\)/g) || []).length, 1, filename);
+    assert.equal((html.match(/'GTM-WNQ48XWW'/g) || []).length, 1, filename);
+    assert.equal((html.match(/'GTM-NKPJGNNC'/g) || []).length, 1, filename);
+    assert.equal((html.match(/gtm\.start/g) || []).length, 2, filename);
+    assert.equal((html.match(/z8s2u64e3i/g) || []).length, 1, filename);
+    assert.equal((html.match(/name="google-site-verification"/g) || []).length, 1, filename);
   }
 });
