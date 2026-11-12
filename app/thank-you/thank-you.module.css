@@ -1,0 +1,128 @@
+.page {
+  --orange: #f36f21;
+  --ink: #151515;
+  --paper: #f4f1ea;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.page * { box-sizing: border-box; }
+.page a { text-decoration: none; }
+
+.header {
+  min-height: 94px;
+  padding: 16px clamp(24px, 5vw, 74px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: #fff;
+}
+
+.logo { display: block; max-width: 100%; height: auto; }
+.headerCall {
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  padding: 15px 20px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.main {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: min(800px, calc(100vh - 155px));
+  padding: 90px clamp(24px, 6vw, 90px);
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(13,13,13,.94), rgba(13,13,13,.82) 55%, rgba(13,13,13,.55)), url('/_site-assets/952c010c4e6f27426342.webp') center/cover;
+  color: #fff;
+}
+
+.inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, .65fr);
+  align-items: center;
+  gap: clamp(38px, 7vw, 110px);
+  width: min(1240px, 100%);
+  margin: 0 auto;
+}
+
+.copy { max-width: 740px; }
+.eyebrow, .nextEyebrow {
+  margin: 0 0 22px;
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.copy h1 {
+  margin: 0 0 27px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: clamp(64px, 8vw, 118px);
+  font-weight: 400;
+  letter-spacing: -.035em;
+  line-height: .91;
+  text-transform: uppercase;
+}
+
+.copy h1 span { color: var(--orange); }
+.lead { max-width: 620px; margin: 0; color: rgba(255,255,255,.86); font-size: 18px; line-height: 1.7; }
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 20px 28px; margin-top: 36px; }
+.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  min-height: 52px;
+  padding: 16px 22px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.secondary { color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.secondary span { margin-left: 9px; color: var(--orange); }
+.headerCall:hover, .primary:hover { background: #cf4e00; }
+.secondary:hover { color: var(--orange); }
+.page a:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+
+.next { padding: 40px 34px; background: var(--paper); color: var(--ink); }
+.nextEyebrow { margin-bottom: 24px; }
+.next ol { margin: 0; padding: 0; list-style: none; counter-reset: steps; }
+.next li { counter-increment: steps; display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; padding: 18px 0; border-top: 1px solid #d7d0c6; }
+.next li::before { content: '0' counter(steps); grid-row: span 2; color: var(--orange); font-family: Impact, sans-serif; font-size: 26px; }
+.next strong { font-size: 13px; line-height: 1.4; text-transform: uppercase; }
+.next span { display: block; margin-top: 5px; color: #555; font-size: 15px; line-height: 1.5; }
+.footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; padding: 25px clamp(24px, 5vw, 74px); background: var(--ink); color: rgba(255,255,255,.7); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+
+@media (max-width: 800px) {
+  .main { min-height: 0; padding-top: 72px; padding-bottom: 72px; }
+  .inner { grid-template-columns: 1fr; gap: 52px; }
+  .next { max-width: 620px; }
+}
+
+@media (max-width: 480px) {
+  .header { min-height: 76px; }
+  .logo { width: 174px; }
+  .headerCall { padding: 13px 12px; gap: 6px; font-size: 10px; line-height: 1.25; }
+  .headerCall span { display: none; }
+  .main { padding-top: 60px; padding-bottom: 60px; }
+  .copy h1 { font-size: clamp(58px, 16vw, 76px); }
+  .lead { font-size: 16px; }
+  .actions { align-items: stretch; flex-direction: column; }
+  .primary { justify-content: space-between; }
+  .next { padding: 30px 24px; }
+}

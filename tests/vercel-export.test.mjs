@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 import nextConfig from "../next.config.ts";
 
 const projectRoot = process.cwd();
@@ -218,6 +219,64 @@ test("connects every estimate form to the shared email endpoint", async () => {
       assert.match(html, /<script src="\/responsive\.js" defer><\/script>/, filename);
     }
   }
+});
+
+test("redirects each estimate form only after a successful submission", async () => {
+  const script = await readFile(path.join(projectRoot, "public", "responsive.js"), "utf8");
+
+  async function submit(ok) {
+    const redirects = [];
+    const events = {};
+    let requests = 0;
+    class HTMLElement {
+      setAttribute() {}
+    }
+    class HTMLButtonElement extends HTMLElement {
+      innerHTML = "Request my free estimate";
+      disabled = false;
+    }
+    class HTMLFormElement extends HTMLElement {
+      dataset = {};
+      button = new HTMLButtonElement();
+      status = null;
+      matches(selector) { return selector === ".estimate-form"; }
+      querySelector(selector) {
+        return selector === 'button[type="submit"]' ? this.button :
+          selector === ".form-status" ? this.status : null;
+      }
+      append(element) { if (element.className === "form-status") this.status = element; }
+      reportValidity() { return true; }
+      reset() {}
+    }
+    const forms = [new HTMLFormElement(), new HTMLFormElement()];
+    const document = {
+      querySelector: () => null,
+      querySelectorAll: () => forms,
+      createElement: () => new HTMLElement(),
+      addEventListener: (type, callback) => { events[type] = callback; },
+    };
+    const window = { location: { href: "https://example.com/service/", assign: (url) => redirects.push(url) } };
+    class FormData {
+      entries() { return [["name", "Test"], ["phone", "555-0100"]][Symbol.iterator](); }
+    }
+    runInNewContext(script, {
+      document, window, HTMLElement, HTMLButtonElement, HTMLFormElement, FormData,
+      fetch: async () => { requests++; return { ok, json: async () => ok ? { ok: true } : { error: "Try again" } }; },
+    });
+    for (const form of forms) {
+      await events.submit({ target: form, preventDefault() {}, stopImmediatePropagation() {} });
+    }
+    return { redirects, requests, forms };
+  }
+
+  const success = await submit(true);
+  assert.equal(success.requests, 2);
+  assert.deepEqual(success.redirects, ["/thank-you/", "/thank-you/"]);
+
+  const failure = await submit(false);
+  assert.equal(failure.requests, 2);
+  assert.deepEqual(failure.redirects, []);
+  assert.ok(failure.forms.every((form) => !form.button.disabled && form.status.className.includes("is-error")));
 });
 
 test("reduces heading sizes globally while preserving the larger H1 adjustment", async () => {

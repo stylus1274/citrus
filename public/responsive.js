@@ -125,6 +125,7 @@
         if (typeof window.gtag === "function") {
           window.gtag("event", "generate_lead", { form_name: "free_estimate" });
         }
+        window.location.assign("/thank-you/");
       } catch (error) {
         status.className = "form-status is-error";
         status.textContent = error instanceof Error
