@@ -59,7 +59,10 @@ export default function RootLayout({
 </script>`,
         }}
       />
-      <body>{children}</body>
+      <body>
+        {children}
+        <script src="/traffic.js" defer />
+      </body>
     </html>
   );
 }

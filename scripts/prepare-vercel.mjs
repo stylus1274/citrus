@@ -63,6 +63,7 @@ function installGoogleTag(html) {
 const responsiveAssets = [
   '<link rel="stylesheet" href="/responsive.css">',
   '<script src="/responsive.js" defer></script>',
+  '<script src="/traffic.js" defer></script>',
 ].join("\n");
 
 const mobileMenuMarkup = `

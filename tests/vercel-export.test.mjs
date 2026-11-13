@@ -430,3 +430,43 @@ test("installs both approved GTM containers and tracking tags on every generated
     assert.equal((html.match(/name="google-site-verification"/g) || []).length, 1, filename);
   }
 });
+
+test("includes first-party tracking on public pages and keeps the admin route out of sitemaps", async () => {
+  const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
+  for (const filename of files) {
+    const html = await readFile(path.join(outputDirectory, filename), "utf8");
+    assert.equal((html.match(/<script src="\/traffic\.js" defer><\/script>/g) || []).length, 1, filename);
+  }
+  const sitemap = await readFile(path.join(projectRoot, "public", "page-sitemap.xml"), "utf8");
+  assert.doesNotMatch(sitemap, /\/traffic\//);
+});
+
+test("records pages in one visit with the landing attribution and no query-string identifiers", async () => {
+  const script = await readFile(path.join(projectRoot, "public", "traffic.js"), "utf8");
+  const storage = new Map();
+  const sent = [];
+  function view(pathname, search, referrer) {
+    runInNewContext(script, {
+      navigator: { webdriver: false, sendBeacon: (url, blob) => { sent.push({ url, blob }); return true; } },
+      location: { pathname, search, host: "www.citrusdemolitionandlandclearing.com" },
+      document: { referrer },
+      sessionStorage: { getItem: (key) => storage.get(key), setItem: (key, value) => storage.set(key, value) },
+      crypto: { randomUUID: () => "01940a3e-918d-4b8d-a145-23d14e498b9e" },
+      URL, URLSearchParams, Blob, Date,
+    });
+  }
+  view("/", "?utm_source=google&utm_medium=cpc&utm_campaign=clearing&gclid=private-click-id", "https://google.com/search?q=land");
+  view("/land-clearing/", "", "https://www.citrusdemolitionandlandclearing.com/");
+  view("/traffic/", "", "");
+  assert.equal(sent.length, 2);
+  const [first, second] = await Promise.all(sent.map(async (entry) => {
+    assert.equal(entry.url, "/api/traffic/collect");
+    return JSON.parse(await entry.blob.text());
+  }));
+  assert.equal(first.session, second.session);
+  assert.equal(second.source, "google");
+  assert.equal(second.medium, "cpc");
+  assert.equal(second.campaign, "clearing");
+  assert.equal(second.path, "/land-clearing/");
+  assert.equal(JSON.stringify(second).includes("private-click-id"), false);
+});
