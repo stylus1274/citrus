@@ -13,7 +13,7 @@ export function LoginForm() {
     setMessage("");
     const form = new FormData(event.currentTarget);
     try {
-      const response = await fetch("/api/traffic/login", {
+      const response = await fetch("/api/traffic/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: form.get("email") }),
@@ -39,7 +39,7 @@ export function LoginForm() {
 
 export function LogoutButton() {
   async function logout() {
-    await fetch("/api/traffic/logout", { method: "POST" });
+    await fetch("/api/traffic/logout/", { method: "POST" });
     window.location.href = "/traffic/";
   }
   return <button className={styles.logout} type="button" onClick={logout}>Sign out</button>;

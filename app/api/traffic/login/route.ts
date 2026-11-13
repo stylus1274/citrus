@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     const hash = createHash("sha256").update(token).digest("hex");
     await sql`INSERT INTO traffic_login_tokens (token_hash, ip_hash, expires_at)
       VALUES (${hash}, ${ipHash}, now() + interval '15 minutes')`;
-    const url = new URL("/api/traffic/verify", request.url);
+    const url = new URL("/api/traffic/verify/", request.url);
     url.searchParams.set("token", token);
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({

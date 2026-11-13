@@ -36,7 +36,7 @@
     gclid: session.gclid,
     msclkid: session.msclkid
   });
-  var url = "/api/traffic/collect";
+  var url = "/api/traffic/collect/";
   if (!navigator.sendBeacon || !navigator.sendBeacon(url, new Blob([body], { type: "application/json" }))) {
     fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: body, keepalive: true }).catch(function () {});
   }

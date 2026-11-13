@@ -460,7 +460,7 @@ test("records pages in one visit with the landing attribution and no query-strin
   view("/traffic/", "", "");
   assert.equal(sent.length, 2);
   const [first, second] = await Promise.all(sent.map(async (entry) => {
-    assert.equal(entry.url, "/api/traffic/collect");
+    assert.equal(entry.url, "/api/traffic/collect/");
     return JSON.parse(await entry.blob.text());
   }));
   assert.equal(first.session, second.session);
