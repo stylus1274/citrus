@@ -17,7 +17,9 @@ type Props = { searchParams: Promise<{ days?: string; error?: string }> };
 export default async function TrafficPage({ searchParams }: Props) {
   const { days: requestedDays, error } = await searchParams;
   const authenticated = await hasTrafficAccess();
+  const is24Hours = requestedDays === "1";
   const days = [7, 30, 90].includes(Number(requestedDays)) ? Number(requestedDays) : 30;
+  const hours = is24Hours ? 24 : days * 24;
   let summary = { views: 0, visits: 0 };
   let channels: { channel: string; visits: number }[] = [];
   let sources: { source: string; visits: number }[] = [];
@@ -31,16 +33,20 @@ export default async function TrafficPage({ searchParams }: Props) {
       const sql = trafficDb();
       const [totals, channelRows, sourceRows, pageRows, dayRows] = await Promise.all([
         sql`SELECT count(*)::int AS views, count(DISTINCT session_id)::int AS visits
-          FROM traffic_pageviews WHERE viewed_at >= now() - (${days}::int * interval '1 day')`,
+          FROM traffic_pageviews WHERE viewed_at >= now() - (${hours}::int * interval '1 hour')`,
         sql`SELECT channel, count(DISTINCT session_id)::int AS visits FROM traffic_pageviews
-          WHERE viewed_at >= now() - (${days}::int * interval '1 day') GROUP BY channel ORDER BY visits DESC`,
+          WHERE viewed_at >= now() - (${hours}::int * interval '1 hour') GROUP BY channel ORDER BY visits DESC`,
         sql`SELECT source, count(DISTINCT session_id)::int AS visits FROM traffic_pageviews
-          WHERE viewed_at >= now() - (${days}::int * interval '1 day') GROUP BY source ORDER BY visits DESC LIMIT 8`,
+          WHERE viewed_at >= now() - (${hours}::int * interval '1 hour') GROUP BY source ORDER BY visits DESC LIMIT 8`,
         sql`SELECT path, count(*)::int AS views FROM traffic_pageviews
-          WHERE viewed_at >= now() - (${days}::int * interval '1 day') GROUP BY path ORDER BY views DESC LIMIT 10`,
+          WHERE viewed_at >= now() - (${hours}::int * interval '1 hour') GROUP BY path ORDER BY views DESC LIMIT 10`,
+        is24Hours ? sql`SELECT to_char(date_trunc('hour', viewed_at) AT TIME ZONE 'America/New_York', 'YYYY-MM-DD HH24:00') AS day,
+          count(*)::int AS views, count(DISTINCT session_id)::int AS visits FROM traffic_pageviews
+          WHERE viewed_at >= now() - interval '24 hours'
+          GROUP BY date_trunc('hour', viewed_at) ORDER BY date_trunc('hour', viewed_at)` :
         sql`SELECT to_char(viewed_at AT TIME ZONE 'America/New_York', 'YYYY-MM-DD') AS day,
           count(*)::int AS views, count(DISTINCT session_id)::int AS visits FROM traffic_pageviews
-          WHERE viewed_at >= now() - (${days}::int * interval '1 day')
+          WHERE viewed_at >= now() - (${hours}::int * interval '1 hour')
           GROUP BY day ORDER BY day`,
       ]);
       summary = { views: Number(totals[0]?.views || 0), visits: Number(totals[0]?.visits || 0) };
@@ -76,7 +82,8 @@ export default async function TrafficPage({ searchParams }: Props) {
           <div className={styles.heading}>
             <div><p className={styles.eyebrow}>Citrus Demolition & Land Clearing</p><h1>Traffic overview</h1><p>First-party website data. Updates as new page views arrive.</p></div>
             <nav className={styles.periods} aria-label="Date range">
-              {[7, 30, 90].map((option) => <Link key={option} href={`/traffic/?days=${option}`} aria-current={days === option ? "page" : undefined}>{option} days</Link>)}
+              {[{ value: 1, label: "24 hours" }, { value: 7, label: "7 days" }, { value: 30, label: "30 days" }, { value: 90, label: "90 days" }].map((option) =>
+                <Link key={option.value} href={`/traffic/?days=${option.value}`} aria-current={(is24Hours ? 1 : days) === option.value ? "page" : undefined}>{option.label}</Link>)}
             </nav>
           </div>
           {databaseError ? <p className={styles.alert} role="alert">Traffic data is temporarily unavailable. Please try again shortly.</p> : <>
@@ -86,11 +93,11 @@ export default async function TrafficPage({ searchParams }: Props) {
               <div><span>Pages per visit</span><strong>{summary.visits ? (summary.views / summary.visits).toFixed(1) : "0.0"}</strong><small>Average</small></div>
             </section>
             <section className={styles.panel}>
-              <div className={styles.panelHeading}><h2>Page views over time</h2><span>Eastern time</span></div>
-              {daily.length ? <div className={styles.chart} role="img" aria-label="Daily page views chart">
-                {daily.map((row) => <div key={row.day} className={styles.barWrap} title={`${row.day}: ${row.views} views, ${row.visits} visits`}>
+              <div className={styles.panelHeading}><h2>Page views over time</h2><span>{is24Hours ? "Hourly" : "Daily"} · Eastern time</span></div>
+              {daily.length ? <div className={styles.chart} role="img" aria-label={`${is24Hours ? "Hourly" : "Daily"} page views chart`}>
+                {daily.map((row, index) => <div key={`${row.day}-${index}`} className={styles.barWrap} title={`${row.day}: ${row.views} views, ${row.visits} visits`}>
                   <div className={styles.bar} style={{ height: `${Math.max(3, (row.views / peak) * 100)}%` }} />
-                  <span>{row.day.slice(5)}</span>
+                  <span>{is24Hours ? row.day.slice(11) : row.day.slice(5)}</span>
                 </div>)}
               </div> : <p className={styles.empty}>No visits recorded yet. Tracking starts when this dashboard goes live.</p>}
             </section>

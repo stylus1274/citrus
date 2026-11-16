@@ -47,4 +47,4 @@
 .row strong { white-space:nowrap; }
 .note { margin:12px 0 0; line-height:1.6; }
 .page :is(a,button,input):focus-visible { outline:3px solid var(--orange); outline-offset:3px; }
-@media(max-width:720px) { .heading { display:block; } .periods { width:max-content; margin-top:22px; } .metrics { grid-template-columns:1fr; } .grid { grid-template-columns:1fr; gap:0; } .header { height:70px; } .panel { padding:22px; } }
+@media(max-width:720px) { .heading { display:block; } .periods { width:100%; margin-top:22px; } .periods a { flex:1 1 calc(50% - 3px); text-align:center; } .metrics { grid-template-columns:1fr; } .grid { grid-template-columns:1fr; gap:0; } .header { height:70px; } .panel { padding:22px; } }
