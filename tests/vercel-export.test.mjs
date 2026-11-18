@@ -4,9 +4,19 @@ import path from "node:path";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
 import nextConfig from "../next.config.ts";
+import { attribution } from "../lib/traffic/attribution.ts";
 
 const projectRoot = process.cwd();
 const outputDirectory = path.join(projectRoot, "public", "_site");
+
+test("separates Google Ads referrers from paid clicks and organic search", () => {
+  assert.deepEqual(attribution({ referrer: "ads.google.com" }), { channel: "Referral", source: "ads.google.com", campaign: "" });
+  assert.equal(attribution({ referrer: "ads.google.com", gclid: true }).channel, "Paid");
+  assert.equal(attribution({ source: "ads.google.com", medium: "cpc" }).channel, "Paid");
+  assert.equal(attribution({ referrer: "www.google.com" }).channel, "Organic search");
+  assert.equal(attribution({ referrer: "www.google.co.uk" }).channel, "Organic search");
+  assert.equal(attribution({ referrer: "www.bing.com" }).channel, "Organic search");
+});
 
 test("links the overview and ten non-location services in the desktop menu", async () => {
   const expected = [

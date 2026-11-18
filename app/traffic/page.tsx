@@ -34,8 +34,9 @@ export default async function TrafficPage({ searchParams }: Props) {
       const [totals, channelRows, sourceRows, pageRows, dayRows] = await Promise.all([
         sql`SELECT count(*)::int AS views, count(DISTINCT session_id)::int AS visits
           FROM traffic_pageviews WHERE viewed_at >= now() - (${hours}::int * interval '1 hour')`,
-        sql`SELECT channel, count(DISTINCT session_id)::int AS visits FROM traffic_pageviews
-          WHERE viewed_at >= now() - (${hours}::int * interval '1 hour') GROUP BY channel ORDER BY visits DESC`,
+        sql`SELECT CASE WHEN channel = 'Organic search' AND source = 'ads.google.com' THEN 'Referral' ELSE channel END AS channel,
+          count(DISTINCT session_id)::int AS visits FROM traffic_pageviews
+          WHERE viewed_at >= now() - (${hours}::int * interval '1 hour') GROUP BY 1 ORDER BY visits DESC`,
         sql`SELECT source, count(DISTINCT session_id)::int AS visits FROM traffic_pageviews
           WHERE viewed_at >= now() - (${hours}::int * interval '1 hour') GROUP BY source ORDER BY visits DESC LIMIT 8`,
         sql`SELECT path, count(*)::int AS views FROM traffic_pageviews
