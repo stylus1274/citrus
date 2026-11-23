@@ -519,7 +519,7 @@ function prepareDocument(html, filename, postRoutes) {
     }
     html = html.replace(
       projectTypeField,
-      '<label class="form-wide"><span>Email <em>Optional</em></span><input name="email" type="email" autocomplete="email" maxlength="254"></label>' + projectTypeField,
+      '<label class="form-wide"><span>Email</span><input name="email" type="email" autocomplete="email" maxlength="254" required></label>' + projectTypeField,
     );
   }
   const route = routeByFile[filename];

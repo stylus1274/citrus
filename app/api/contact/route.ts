@@ -79,13 +79,13 @@ export async function POST(request: Request) {
   const details = clean(payload.details, MAX_LENGTH.details) || "Not provided";
   const sourcePage = clean(payload.sourcePage, MAX_LENGTH.sourcePage) || "Unknown page";
 
-  if (!name || !phone || !projectType || !location) {
+  if (!name || !phone || !email || !projectType || !location) {
     return Response.json(
       { error: "Please complete all required fields." },
       { status: 400 },
     );
   }
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return Response.json({ error: "Please enter a valid email address." }, { status: 400 });
   }
 
@@ -112,7 +112,7 @@ export async function POST(request: Request) {
   const rows = [
     ["Name", name],
     ["Phone", phone],
-    ["Email", email || "Not provided"],
+    ["Email", email],
     ["Project type", projectType],
     ["Project location", location],
     ["Project details", details],
@@ -122,7 +122,7 @@ export async function POST(request: Request) {
   const { error } = await resend.emails.send({
     from,
     to,
-    ...(email ? { replyTo: email } : {}),
+    replyTo: email,
     subject,
     text: rows.map(([label, value]) => `${label}: ${value}`).join("\n"),
     html: `

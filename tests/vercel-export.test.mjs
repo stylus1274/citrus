@@ -231,7 +231,7 @@ test("connects every estimate form to the shared email endpoint", async () => {
       const forms = [...html.matchAll(/<form\b[^>]*class="estimate-form"[^>]*>[\s\S]*?<\/form>/g)];
       for (const [form] of forms) {
         formCount++;
-        assert.match(form, /<input name="email" type="email" autocomplete="email" maxlength="254">/, filename);
+        assert.match(form, /<label class="form-wide"><span>Email<\/span><input name="email" type="email" autocomplete="email" maxlength="254" required><\/label>/, filename);
       }
     }
   }
