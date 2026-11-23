@@ -271,7 +271,7 @@ function articleDates(html) {
   const published = schemaDate(meta.match(/Published\s+([A-Z][a-z]+\s+\d{1,2},\s+\d{4})/i)?.[1]);
   const modified = schemaDate(meta.match(/Updated\s+([A-Z][a-z]+\s+\d{1,2},\s+\d{4})/i)?.[1]);
   return {
-    datePublished: published || modified,
+    datePublished: published,
     dateModified: modified || published,
   };
 }
@@ -594,7 +594,7 @@ async function main() {
     "blog.html",
   ));
   const postRoutes = new Set(
-    [...blogHtml.matchAll(/<article\b[^>]*class=["'][^"']*\barticle-card\b[^"']*["'][\s\S]*?<a\b[^>]*href=["'](\/[^"'#?]+)["']/gi)]
+    [...blogHtml.matchAll(/<article\b[^>]*class=["'][^"']*\b(?:article-card|featured-article)\b[^"']*["'][\s\S]*?<a\b[^>]*href=["'](\/[^"'#?]+)["']/gi)]
       .map((match) => withTrailingSlash(match[1])),
   );
   for (const filename of files) {

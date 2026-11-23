@@ -362,8 +362,12 @@ test("generates search-engine discovery files", async () => {
 
 test("generates complete structured data for every blog post", async () => {
   const postSitemap = await readFile(path.join(projectRoot, "public", "post-sitemap.xml"), "utf8");
+  const pageSitemap = await readFile(path.join(projectRoot, "public", "page-sitemap.xml"), "utf8");
   const postUrls = [...postSitemap.matchAll(/<loc>(https:\/\/[^<]+)<\/loc>/g)].map((match) => match[1]);
-  assert.equal(postUrls.length, 35);
+  const featuredUrl = "https://www.citrusdemolitionandlandclearing.com/demolition-permits-citrus-county-fl/";
+  assert.equal(postUrls.length, 36);
+  assert.ok(postUrls.includes(featuredUrl));
+  assert.doesNotMatch(pageSitemap, /demolition-permits-citrus-county-fl/);
 
   for (const url of postUrls) {
     const slug = new URL(url).pathname.split("/").filter(Boolean).join("/");
@@ -385,8 +389,12 @@ test("generates complete structured data for every blog post", async () => {
     assert.match(article.url, /^https:\/\/www\.citrusdemolitionandlandclearing\.com\/.+\/$/, slug);
     assert.match(article.image[0], /^https:\/\//, slug);
     assert.equal(article.author["@id"], "https://www.citrusdemolitionandlandclearing.com/#organization", slug);
-    assert.match(article.datePublished, /^\d{4}-\d{2}-\d{2}$/, slug);
+    if (article.datePublished) assert.match(article.datePublished, /^\d{4}-\d{2}-\d{2}$/, slug);
     assert.match(article.dateModified, /^\d{4}-\d{2}-\d{2}$/, slug);
+    if (url === featuredUrl) {
+      assert.equal(article.dateModified, "2026-09-08");
+      assert.equal(article.datePublished, undefined);
+    }
     assert.match(html, /<meta property="og:type" content="article">/, slug);
 
     const breadcrumb = graph.find((item) => item["@type"] === "BreadcrumbList");
