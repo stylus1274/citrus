@@ -512,6 +512,16 @@ function prepareDocument(html, filename, postRoutes) {
     '<div class="services-group"><p>Demolition</p>',
     '<div class="services-group"><p><a href="/demolition-services" target="_top" style="color:inherit;text-decoration:none">Demolition Services ↗</a></p>',
   );
+  if (html.includes('class="estimate-form"')) {
+    const projectTypeField = '<label><span>Project type</span>';
+    if (!html.includes(projectTypeField)) {
+      throw new Error(`Estimate form is missing its project type field in ${filename}`);
+    }
+    html = html.replace(
+      projectTypeField,
+      '<label class="form-wide"><span>Email <em>Optional</em></span><input name="email" type="email" autocomplete="email" maxlength="254"></label>' + projectTypeField,
+    );
+  }
   const route = routeByFile[filename];
   const isPost = postRoutes.has(withTrailingSlash(route));
   const canonicalUrl = `${productionOrigin}${withTrailingSlash(route)}`;

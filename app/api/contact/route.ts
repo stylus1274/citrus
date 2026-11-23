@@ -5,6 +5,7 @@ export const runtime = "nodejs";
 const MAX_LENGTH = {
   name: 100,
   phone: 40,
+  email: 254,
   projectType: 100,
   location: 180,
   details: 3000,
@@ -14,6 +15,7 @@ const MAX_LENGTH = {
 type ContactPayload = {
   name?: unknown;
   phone?: unknown;
+  email?: unknown;
   projectType?: unknown;
   location?: unknown;
   details?: unknown;
@@ -71,6 +73,7 @@ export async function POST(request: Request) {
 
   const name = clean(payload.name, MAX_LENGTH.name);
   const phone = clean(payload.phone, MAX_LENGTH.phone);
+  const email = clean(payload.email, MAX_LENGTH.email);
   const projectType = clean(payload.projectType, MAX_LENGTH.projectType);
   const location = clean(payload.location, MAX_LENGTH.location);
   const details = clean(payload.details, MAX_LENGTH.details) || "Not provided";
@@ -81,6 +84,9 @@ export async function POST(request: Request) {
       { error: "Please complete all required fields." },
       { status: 400 },
     );
+  }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return Response.json({ error: "Please enter a valid email address." }, { status: 400 });
   }
 
   const submittedAt = Number(payload.submittedAt);
@@ -106,6 +112,7 @@ export async function POST(request: Request) {
   const rows = [
     ["Name", name],
     ["Phone", phone],
+    ["Email", email || "Not provided"],
     ["Project type", projectType],
     ["Project location", location],
     ["Project details", details],
@@ -115,6 +122,7 @@ export async function POST(request: Request) {
   const { error } = await resend.emails.send({
     from,
     to,
+    ...(email ? { replyTo: email } : {}),
     subject,
     text: rows.map(([label, value]) => `${label}: ${value}`).join("\n"),
     html: `

@@ -223,12 +223,19 @@ test("connects every estimate form to the shared email endpoint", async () => {
   assert.match(responsiveJs, /generate_lead/);
 
   const files = (await readdir(outputDirectory)).filter((file) => file.endsWith(".html"));
+  let formCount = 0;
   for (const filename of files) {
     const html = await readFile(path.join(outputDirectory, filename), "utf8");
     if (html.includes('class="estimate-form"')) {
       assert.match(html, /<script src="\/responsive\.js" defer><\/script>/, filename);
+      const forms = [...html.matchAll(/<form\b[^>]*class="estimate-form"[^>]*>[\s\S]*?<\/form>/g)];
+      for (const [form] of forms) {
+        formCount++;
+        assert.match(form, /<input name="email" type="email" autocomplete="email" maxlength="254">/, filename);
+      }
     }
   }
+  assert.equal(formCount, 64);
 });
 
 test("redirects each estimate form only after a successful submission", async () => {
