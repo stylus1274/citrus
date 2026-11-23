@@ -79,7 +79,7 @@ export async function POST(request: Request) {
   const details = clean(payload.details, MAX_LENGTH.details) || "Not provided";
   const sourcePage = clean(payload.sourcePage, MAX_LENGTH.sourcePage) || "Unknown page";
 
-  if (!name || !phone || !email || !projectType || !location) {
+  if (!name || !email || !projectType || !location) {
     return Response.json(
       { error: "Please complete all required fields." },
       { status: 400 },
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
   const subject = `New estimate request: ${projectType} in ${location}`;
   const rows = [
     ["Name", name],
-    ["Phone", phone],
+    ["Phone", phone || "Not provided"],
     ["Email", email],
     ["Project type", projectType],
     ["Project location", location],

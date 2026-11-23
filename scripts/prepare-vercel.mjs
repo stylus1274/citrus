@@ -514,9 +514,11 @@ function prepareDocument(html, filename, postRoutes) {
   );
   if (html.includes('class="estimate-form"')) {
     const projectTypeField = '<label><span>Project type</span>';
-    if (!html.includes(projectTypeField)) {
-      throw new Error(`Estimate form is missing its project type field in ${filename}`);
+    const requiredPhoneField = '<input name="phone" type="tel" autocomplete="tel" required>';
+    if (!html.includes(projectTypeField) || !html.includes(requiredPhoneField)) {
+      throw new Error(`Estimate form is missing an expected field in ${filename}`);
     }
+    html = html.replace(requiredPhoneField, '<input name="phone" type="tel" autocomplete="tel">');
     html = html.replace(
       projectTypeField,
       '<label class="form-wide"><span>Email</span><input name="email" type="email" autocomplete="email" maxlength="254" required></label>' + projectTypeField,
